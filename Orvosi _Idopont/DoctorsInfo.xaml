@@ -33,7 +33,7 @@
                                 <Image Source="{Binding profilKépUrl}" Width="150" Height="180" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 </Border>
                                 
-                                    <Label Content="{Binding specialty}" FontStyle="Italic" FontSize="14"/>
+                                    <Label FontWeight="Bold" Content="{Binding specialty}" FontStyle="Italic" FontSize="14"/>
                                 <Label Content="{Binding treatment}" FontStyle="Italic" FontSize="14"/>
                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="14"/>
                             </StackPanel>
