@@ -8,6 +8,10 @@
         Title="DoctorsInfo" Height="450" Width="800">
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="https://cdn.pixabay.com/photo/2025/01/04/18/19/background-9310581_1280.jpg"
+                        Stretch="UniformToFill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -25,8 +29,11 @@
                         <Border BorderThickness="1" BorderBrush="Gray" Padding="10" Margin="5">
                             <StackPanel>
                                 <Label Content="{Binding Docname}" FontWeight="Bold" FontSize="16"/>
-                                <Image Source="{Binding profilKépUrl}" Width="100" Height="100" HorizontalAlignment="Left"/>
-                                <Label Content="{Binding specialty}" FontStyle="Italic" FontSize="14"/>
+                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="5" Width="130">
+                                <Image Source="{Binding profilKépUrl}" Width="150" Height="180" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                </Border>
+                                
+                                    <Label Content="{Binding specialty}" FontStyle="Italic" FontSize="14"/>
                                 <Label Content="{Binding treatment}" FontStyle="Italic" FontSize="14"/>
                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="14"/>
                             </StackPanel>
@@ -36,7 +43,7 @@
             </ItemsControl>
         </ScrollViewer>
         <StackPanel  Grid.Row="2" >
-            <Button  Background="Beige" Foreground="Black" Content="Return to main page" FontWeight="ExtraBold"  Width="140" Height="60" Click="Return_Click"/>
+            <Button Padding="10"  Background="black" Foreground="White" Content="Return to main page" FontWeight="ExtraBold"  Width="150" Height="50" Click="Return_Click"/>
         </StackPanel>
      
     </Grid>
