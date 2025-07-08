@@ -70,6 +70,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Administration.xaml.cs">
+      <DependentUpon>Administration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DoctorInfo.cs" />
     <Compile Include="DoctorsInfo.xaml.cs">
       <DependentUpon>DoctorsInfo.xaml</DependentUpon>
@@ -77,6 +80,10 @@
     <Compile Include="JsonResponse.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Serverconnection.cs" />
+    <Page Include="Administration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DoctorsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
