@@ -110,14 +110,14 @@ namespace Orvosi__Idopont
             doctorsInfo.Show();
             this.Close();
 
-    }
+        }
 
 
-     private List<string>GenerateSlot(TimeSpan start, TimeSpan end,int munites)
+        private List<string> GenerateSlot(TimeSpan start, TimeSpan end, int munites)
         {
             var slots = new List<string>();
 
-            for(TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(munites)))
+            for (TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(munites)))
             {
                 DateTime timedate = DateTime.Today.Add(time);
                 slots.Add(timedate.ToString("hh:mm tt"));
@@ -131,7 +131,7 @@ namespace Orvosi__Idopont
 
             var morningslots = GenerateSlot(TimeSpan.FromHours(9), TimeSpan.FromHours(12), 15);
 
-            foreach(var item in morningslots)
+            foreach (var item in morningslots)
             {
                 TimeSlotsList.Items.Add(item);
             }
@@ -141,7 +141,7 @@ namespace Orvosi__Idopont
         {
             TimeSlotsList.Items.Clear();
 
-            var afternoonSlot = GenerateSlot(TimeSpan.FromHours(13),TimeSpan.FromHours(17), 15);
+            var afternoonSlot = GenerateSlot(TimeSpan.FromHours(13), TimeSpan.FromHours(17), 15);
 
             foreach (var item in afternoonSlot)
             {
