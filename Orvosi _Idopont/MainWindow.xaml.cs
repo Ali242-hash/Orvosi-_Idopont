@@ -12,63 +12,10 @@ namespace Orvosi__Idopont
         public MainWindow()
         {
             InitializeComponent();
-            Start();
+           
         }
 
-        async void Start()
-        {
-            try
-            {
-                if (UsersPanel == null)
-                {
-                    MessageBox.Show("Error: 'UsersPanel' not found.");
-                    return;
-                }
-
-                UsersPanel.Children.Clear();
-
-                List<Userprofile> list = await connection.GetUserprofiles();
-
-                foreach (Userprofile profile in list)
-                {
-                    Grid grid = new Grid();
-                    grid.Margin = new Thickness(5);
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(100) });
-
-                    Label onelabel = new Label()
-                    {
-                        Content = $"Name: {profile.Fullname}, Email: {profile.email}, Username: {profile.username}, Password: {profile.password}, Role: {profile.role}, TimeSlot: {profile.date}",
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Padding = new Thickness(5)
-                    };
-                    Grid.SetColumn(onelabel, 0);
-
-                    Button onebutton = new Button()
-                    {
-                        Content = "Torles",
-                        Tag = profile.id,
-                        Width = 80,
-                        Height = 30,
-                        Margin = new Thickness(5),
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
-                    Grid.SetColumn(onebutton, 1);
-
-                    onebutton.Click += DeleteEvent;
-
-                    grid.Children.Add(onelabel);
-                    grid.Children.Add(onebutton);
-
-                    UsersPanel.Children.Add(grid);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error in Start(): " + ex.Message);
-            }
-        }
+      
 
         public void Cancel_click(object sender, RoutedEventArgs e)
         {
@@ -76,16 +23,7 @@ namespace Orvosi__Idopont
             MessageBox.Show("Your appointment has been canceled");
         }
 
-        async void DeleteEvent(object s, RoutedEventArgs e)
-        {
-            Button button = s as Button;
-
-            if (button != null)
-            {
-                await connection.Deleteone((int)button.Tag);
-                Start();
-            }
-        }
+       
 
         async void Book_Click(object sender, RoutedEventArgs e)
         {
@@ -101,7 +39,7 @@ namespace Orvosi__Idopont
 
             await connection.PostUserprofile(oneUser);
 
-            Start();
+            
         }
 
         private void Doc_Click(object sender, RoutedEventArgs e)
@@ -149,14 +87,12 @@ namespace Orvosi__Idopont
             }
         }
 
-
-
-
-
-
-
-
-
+        private void Return_click(object sender, RoutedEventArgs e)
+        {
+            Administration adminwindow = new Administration();
+            adminwindow.Show();
+            this.Close();
+        }
 
 
 

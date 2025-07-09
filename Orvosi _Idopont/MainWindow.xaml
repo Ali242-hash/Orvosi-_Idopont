@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Orvosi__Idopont"
         mc:Ignorable="d"
-        Title="MainWindow" Height="950" Width="850">
+        Title="MainWindow" Height="750" Width="850">
 
     <Grid Background="Bisque" >
         <Grid.RowDefinitions>
@@ -38,11 +38,12 @@
                     <CheckBox Checked="Afternoon_Checked" Name="Afternoon" Content="Afternoon" Margin="0 20 0 10" />
                     <ListBox Name="TimeSlotsList" Height="110" />
 
-                    <Button Content="Doctor Information" BorderThickness="3" BorderBrush="Black" Width="150" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,20,0,10" Click= "Doc_Click"  />
-                    <Button Click="Book_Click"  Content="Book Appointment" BorderThickness="3" BorderBrush="Black" Width="150" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,20,0,10"  />
-                    <Button Click="Cancel_click"  Content="Cancel Appointment" BorderThickness="3" BorderBrush="Black" Width="150" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,20,0,10"  />
+                    <Button FontSize="10" Content="Doctor Information" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10" Click= "Doc_Click"  />
+                    <Button FontSize="10" Click="Book_Click"  Content="Book Appointment" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10"  />
+                    <Button FontSize="10" Click="Cancel_click"  Content="Cancel Appointment" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10"  />
+                    <Button FontSize="10" Click="Return_click"  Content="Admin" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10"  />
 
-                    <Label Content="Users:" FontSize="16" FontWeight="Bold" Margin="0,20,0,10" />
+                    <Label Content="Users:" FontSize="12" FontWeight="Bold" Margin="0,20,0,10" />
                     <StackPanel x:Name="UsersPanel" Background="LightYellow" />
                 </StackPanel>
             </ScrollViewer>

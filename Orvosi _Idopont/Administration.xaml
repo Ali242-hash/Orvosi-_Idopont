@@ -9,7 +9,6 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
-
         <Border CornerRadius="10" Width="300" Grid.Row="0" BorderThickness="3" BorderBrush="Firebrick" Margin="10">
             <Label Content="Administration"
                    HorizontalAlignment="Center"
@@ -19,7 +18,6 @@
                    Padding="10"/>
         </Border>
 
- 
         <Image Grid.Row="1"
                VerticalAlignment="Stretch"
                HorizontalAlignment="Stretch"
@@ -27,14 +25,12 @@
                Stretch="Uniform"
                Source="https://cdn.pixabay.com/photo/2020/04/03/00/22/doctor-4997061_1280.png" />
 
-       
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-          
             <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Border CornerRadius="15" BorderBrush="Black" BorderThickness="2" Margin="0 40 0 10" Width="200" Background="White">
                     <TextBox  
@@ -76,8 +72,12 @@
                 </Border>
             </StackPanel>
 
-       
-            <ScrollViewer Grid.Column="1" Margin="20">
+           
+            <ScrollViewer Grid.Column="1"
+                          VerticalScrollBarVisibility="Auto"
+                          VerticalAlignment="Stretch"
+                         Background="AliceBlue" 
+                          Margin="20">
                 <StackPanel Name="Patientinfo" />
             </ScrollViewer>
         </Grid>
