@@ -39,7 +39,7 @@ namespace Orvosi__Idopont
                     panelgrid.Children.Add(new Label() { Content=$"Username: {profile.username}"});
                     panelgrid.Children.Add(new Label() { Content = $"Password: {profile.password}" });
                     panelgrid.Children.Add(new Label() { Content = $"Role: {profile.role}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.date}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.létrehozásDátuma}" });
 
                     Grid.SetColumn(panelgrid, 0);
                     grid.Children.Add(panelgrid);
