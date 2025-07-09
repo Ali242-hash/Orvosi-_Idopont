@@ -23,7 +23,7 @@ namespace Orvosi__Idopont
                 new DoctorInfo
                 {
                     Docname = "Dr. Ali Ebtekar",
-                    profilKépUrl = "https://cdn.pixabay.com/photo/2015/05/26/09/05/doctor-784329_1280.png",
+                    profilKépUrl = "https://cdn.pixabay.com/photo/2024/09/03/15/21/ai-generated-9019520_1280.png",
                     specialty = "Dermatology",
                     treatments = "Offers acne treatment, mole and wart removal, chemical peels, psoriasis and eczema care, as well as Botox and dermal fillers.",
                     Description = "Board-certified dermatologist with over 10 years of experience in treating skin, hair, and nail disorders. He emphasizes preventive care and modern aesthetic treatments."
@@ -31,7 +31,7 @@ namespace Orvosi__Idopont
                 new DoctorInfo
                 {
                     Docname = "Dr. Mátyás Palánki",
-                    profilKépUrl = "https://cdn.pixabay.com/photo/2024/09/03/15/21/ai-generated-9019520_1280.png",
+                    profilKépUrl = "https://cdn.pixabay.com/photo/2024/08/13/11/42/ai-generated-8965801_1280.png",
                     specialty = "Cardiology",
                     treatments = "Provides ECG and stress testing, hypertension and cholesterol management, coronary artery disease treatment, and heart failure care.",
                     Description = "Senior cardiologist known for his patient-centered approach. He specializes in managing heart disease, hypertension, and performing stress tests."
