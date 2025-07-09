@@ -14,7 +14,7 @@ namespace Orvosi__Idopont
         public string password { get; set; }
         public string username { get; set; }
         public string role { get; set; }
-        public DateTime date { get; set; }
+        public DateTime? létrehozásDátuma { get; set; }
     }
 
     public class Appointment
@@ -24,7 +24,7 @@ namespace Orvosi__Idopont
         public int? páciensId { get; set; }
         public string név { get; set; }
         public string megjegyzés { get; set; }
-        public DateTime létrehozásDátuma { get; set; }
+        public DateTime? létrehozásDátuma { get; set; }
     }
 
     public class LoginInfo

@@ -27,14 +27,24 @@ namespace Orvosi__Idopont
 
         async void Book_Click(object sender, RoutedEventArgs e)
         {
+
+            string rolechange = roleinput.Text.ToLower();
+
+            if(rolechange!="patient" && rolechange!="doctor" && rolechange != "admin")
+            {
+                MessageBox.Show("Please select the valid roles ");
+                return;
+            }
+
+
             Userprofile oneUser = new Userprofile()
             {
                 Fullname = FullnameInput.Text,
                 email = emailinput.Text,
                 username = userinput.Text,
                 password = passwordinput.Text,
-                date = DateTime.Now,
-                role = roleinput.Text,
+                létrehozásDátuma = DateTime.Now,
+                role = rolechange,
             };
 
             await connection.PostUserprofile(oneUser);
