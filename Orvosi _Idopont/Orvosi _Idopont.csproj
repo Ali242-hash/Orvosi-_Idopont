@@ -74,6 +74,9 @@
       <DependentUpon>Administration.xaml</DependentUpon>
     </Compile>
     <Compile Include="DoctorInfo.cs" />
+    <Compile Include="DoctorRegistration.xaml.cs">
+      <DependentUpon>DoctorRegistration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DoctorsInfo.xaml.cs">
       <DependentUpon>DoctorsInfo.xaml</DependentUpon>
     </Compile>
@@ -81,6 +84,10 @@
     <Compile Include="Message.cs" />
     <Compile Include="Serverconnection.cs" />
     <Page Include="Administration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DoctorRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

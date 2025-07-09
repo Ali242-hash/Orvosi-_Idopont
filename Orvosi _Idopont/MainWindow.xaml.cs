@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Orvosi__Idopont
 {
@@ -12,10 +13,24 @@ namespace Orvosi__Idopont
         public MainWindow()
         {
             InitializeComponent();
-           
         }
 
-      
+        private void Window_key(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var allkey = Keyboard.FocusedElement;
+
+                if (allkey == Docpage)
+                    Doc_Click(sender, e);
+                else if (allkey == Bookpage)
+                    Book_Click(sender, e);
+                else if (allkey == cancelconfirm)
+                    Cancel_click(sender, e);
+                else if (allkey == adminpage)
+                    Return_click(sender, e);
+            }
+        }
 
         public void Cancel_click(object sender, RoutedEventArgs e)
         {
@@ -23,19 +38,26 @@ namespace Orvosi__Idopont
             MessageBox.Show("Your appointment has been canceled");
         }
 
-       
-
         async void Book_Click(object sender, RoutedEventArgs e)
         {
-
-            string rolechange = roleinput.Text.ToLower();
-
-            if(rolechange!="patient" && rolechange!="doctor" && rolechange != "admin")
+            if (string.IsNullOrWhiteSpace(FullnameInput.Text) ||
+                string.IsNullOrWhiteSpace(passwordinput.Text) ||
+                string.IsNullOrWhiteSpace(userinput.Text) ||
+                string.IsNullOrWhiteSpace(emailinput.Text) ||
+                string.IsNullOrWhiteSpace(roleinput.Text) ||
+                dateinput.SelectedDate == null)
             {
-                MessageBox.Show("Please select the valid roles ");
+                MessageBox.Show("Please fill in all the boxes");
                 return;
             }
 
+            string rolechange = roleinput.Text.ToLower();
+
+            if (rolechange != "patient" && rolechange != "doctor" && rolechange != "admin")
+            {
+                MessageBox.Show("Please select a valid role");
+                return;
+            }
 
             Userprofile oneUser = new Userprofile()
             {
@@ -48,8 +70,7 @@ namespace Orvosi__Idopont
             };
 
             await connection.PostUserprofile(oneUser);
-
-            
+            MessageBox.Show("Your registration is confirmed");
         }
 
         private void Doc_Click(object sender, RoutedEventArgs e)
@@ -57,24 +78,24 @@ namespace Orvosi__Idopont
             DoctorsInfo doctorsInfo = new DoctorsInfo();
             doctorsInfo.Show();
             this.Close();
-
         }
 
-
-        private List<string> GenerateSlot(TimeSpan start, TimeSpan end, int munites)
+        private List<string> GenerateSlot(TimeSpan start, TimeSpan end, int minutes)
         {
             var slots = new List<string>();
 
-            for (TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(munites)))
+            for (TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(minutes)))
             {
                 DateTime timedate = DateTime.Today.Add(time);
                 slots.Add(timedate.ToString("hh:mm tt"));
-            };
+            }
             return slots;
         }
 
         private void Morning_Checked(object sender, RoutedEventArgs e)
         {
+            Afternoon.IsChecked = false;
+
             TimeSlotsList.Items.Clear();
 
             var morningslots = GenerateSlot(TimeSpan.FromHours(9), TimeSpan.FromHours(12), 15);
@@ -87,6 +108,8 @@ namespace Orvosi__Idopont
 
         private void Afternoon_Checked(object sender, RoutedEventArgs e)
         {
+            Morningslot.IsChecked = false;
+
             TimeSlotsList.Items.Clear();
 
             var afternoonSlot = GenerateSlot(TimeSpan.FromHours(13), TimeSpan.FromHours(17), 15);
@@ -103,11 +126,5 @@ namespace Orvosi__Idopont
             adminwindow.Show();
             this.Close();
         }
-
-
-
-
-
-
     }
 }
