@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Orvosi__Idopont
@@ -134,6 +135,14 @@ namespace Orvosi__Idopont
                     tb.Text = "Password";
                     tb.Foreground = new SolidColorBrush(Colors.Firebrick);
                 }
+            }
+        }
+
+        private void Admin_Click(object s,KeyEventArgs e)
+        {
+            if(e.Key==Key.Enter)
+            {
+                Enter_admin(s,e);
             }
         }
     }

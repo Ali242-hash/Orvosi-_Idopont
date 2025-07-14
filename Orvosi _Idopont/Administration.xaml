@@ -60,6 +60,8 @@
 
                 <Border CornerRadius="20" BorderBrush="SaddleBrown" BorderThickness="2" Background="SaddleBrown" Margin="0 30" Width="200" ClipToBounds="True">
                     <Button 
+                        KeyDown="Admin_Click"
+                        IsDefault="True"
                         FontWeight="Bold" 
                         FontSize="15" 
                         BorderThickness="0" 

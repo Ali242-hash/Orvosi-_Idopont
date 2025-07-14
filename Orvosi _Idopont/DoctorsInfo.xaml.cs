@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Text;
+using System.Windows.Interop;
 
 namespace Orvosi__Idopont
 {
@@ -16,39 +21,62 @@ namespace Orvosi__Idopont
             Start();
         }
 
-        public void Start()
+        public async void Start()
         {
-            var listofDoctors = new List<DoctorInfo>
+            HttpClient client = new HttpClient();
+            string url = "http://127.1.1.1:3000/doctorprofiles";
+
+            try
             {
-                new DoctorInfo
-                {
-                    Docname = "Dr. Ali Ebtekar",
-                    profilKépUrl = "https://cdn.pixabay.com/photo/2024/09/03/15/21/ai-generated-9019520_1280.png",
-                    specialty = "Dermatology",
-                    treatments = "Offers acne treatment, mole and wart removal, chemical peels, psoriasis and eczema care, as well as Botox and dermal fillers.",
-                    Description = "Board-certified dermatologist with over 10 years of experience in treating skin, hair, and nail disorders. He emphasizes preventive care and modern aesthetic treatments."
-                },
-                new DoctorInfo
-                {
-                    Docname = "Dr. Mátyás Palánki",
-                    profilKépUrl = "https://cdn.pixabay.com/photo/2024/08/13/11/42/ai-generated-8965801_1280.png",
-                    specialty = "Cardiology",
-                    treatments = "Provides ECG and stress testing, hypertension and cholesterol management, coronary artery disease treatment, and heart failure care.",
-                    Description = "Senior cardiologist known for his patient-centered approach. He specializes in managing heart disease, hypertension, and performing stress tests."
-                },
-                new DoctorInfo
-                {
-                    Docname = "Dr. Peter Busko",
-                    profilKépUrl = "https://cdn.pixabay.com/photo/2023/12/15/18/40/ai-generated-8451277_1280.png",
-                    specialty = "Orthopedics",
-                    treatments = "Handles joint pain and arthritis care, fracture management, sports injury rehabilitation, spine treatments, and joint replacement consultations.",
-                    Description = "Experienced orthopedist offering care for musculoskeletal issues including spine problems, fractures, and joint conditions."
-                }
-            };
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-            DoctorsList.ItemsSource = listofDoctors;
+                string jsonData = await response.Content.ReadAsStringAsync();
 
-     
+                var Doctors = JsonConvert.DeserializeObject<List<DoctorInfo>>(jsonData);
+
+                DoctorsList.ItemsSource = Doctors;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load: " + ex.Message);
+            }
+        }
+
+        private List<string> Doctor_appoin(TimeSpan start, TimeSpan end, int minutes)
+        {
+            var Applist = new List<string>();
+
+            for (TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(minutes)))
+            {
+                DateTime doctimedate = DateTime.Today.Add(time);
+                Applist.Add(doctimedate.ToString("hh:mm tt"));
+            }
+            return Applist;
+        }
+
+        private void Morning_Doc(object s, RoutedEventArgs e)
+        {
+            Afternoondoc.IsChecked = false;
+            Docshift.Items.Clear();
+
+            var Docmorn_shift = Doctor_appoin(TimeSpan.FromHours(9), TimeSpan.FromHours(12), 15);
+            foreach (var item in Docmorn_shift)
+            {
+                Docshift.Items.Add(item);
+            }
+        }
+
+        private void Afternoon_Doc(object s, RoutedEventArgs e)
+        {
+            Morningdoc.IsChecked = false;
+            Docshift.Items.Clear();
+
+            var Doc_shiftafter = Doctor_appoin(TimeSpan.FromHours(13), TimeSpan.FromHours(17), 15);
+            foreach (var item in Doc_shiftafter)
+            {
+                Docshift.Items.Add(item);
+            }
         }
 
         private void Return_Click(object sender, RoutedEventArgs e)
@@ -58,13 +86,52 @@ namespace Orvosi__Idopont
             this.Close();
         }
 
+        private async void Shift_Confirm(object sender, RoutedEventArgs e)
+        {
+            if(DoctorDatePicker.SelectedDate == null)
+            {
+                MessageBox.Show("Please select either(Morning or Afternoon) Shift");
+                return;
+            }
+
+            var shifttype = Morningdoc.IsChecked==true? "délelőtt":
+                Afternoondoc.IsChecked == true ? "délután" : null;
+
+            var selectedDate = DoctorDatePicker.SelectedDate.Value.ToString("yyyy-MM-dd");
+            if (selectedDate == null)
+            {
+                MessageBox.Show("Please select either(Morning or Afternoon) Shift");
+                return;
+            }
+
+            var jsonData = new
+            {
+                doctorId = 1,
+                dátum = selectedDate,
+                típus =shifttype,
+                active = true,
+            };
+
+            using(HttpClient client = new HttpClient())
+            {
+                var stringJson = JsonConvert.SerializeObject(jsonData);
+                var content = new StringContent(stringJson,Encoding.UTF8,"application/json");
+                var response = await client.PostAsync("http://127.1.1.1:3000/shifts", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Your shift confirmed");
+                    
+                }
+
+                else
+                {
+                    string mesg = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Your shift login did not go through,please try again {mesg}");
+                }
+            }
 
 
+        }
 
-
-
-
-    }
-
-
+     }
 }
