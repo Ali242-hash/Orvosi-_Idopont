@@ -1,268 +1,223 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Orvosi__Idopont
 {
     public class Serverconnection
     {
-        HttpClient client = new HttpClient();
-        string baseUrl = "http://127.1.1.1:3000";
+        private readonly HttpClient client = new HttpClient();
+        private readonly string baseUrl = string.Empty;
 
-        public Serverconnection(string url)
+        public Serverconnection()
         {
-            baseUrl = url;
+            baseUrl = "http://127.1.1.1:3000";
         }
 
-        public async Task<List<Userprofile>> GetUserprofiles()
+        private async Task<object> Connection(string methodType, string urlString, string jsonString = null)
         {
-            string url = baseUrl + "/users";
-            List<Userprofile> all = new List<Userprofile>();
+            authHeader();
+            string url = baseUrl + urlString;
+
+            string responseText = null;
+
+            if ((methodType.ToLower() == "get" || methodType.ToLower() == "post" || methodType.ToLower() == "delete") && jsonString != null)
+            {
+                MessageBox.Show("get,post and delete is working");
+                return null;
+            }
+
+            responseText = string.Empty;
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string res = await response.Content.ReadAsStringAsync();
-                all = JsonConvert.DeserializeObject<List<Userprofile>>(res);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+                HttpResponseMessage response = new HttpResponseMessage();
 
-            return all;
-        }
-
-        public async Task<List<Appointment>> GetAppointments()
-        {
-            string url = baseUrl + "/appointments";
-            List<Appointment> all = new List<Appointment>();
-
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string res = await response.Content.ReadAsStringAsync();
-                all = JsonConvert.DeserializeObject<List<Appointment>>(res);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            return all;
-        }
-
-        public async Task<bool> Registration(string username, string password, string email, string role)
-        {
-            string url = baseUrl + "/auth/register";
-
-            try
-            {
-                var jsonData = new
+                if (jsonString != null)
                 {
-                    RegisterUsername = username,
-                    RegisterPassword = password,
-                    RegisterEmail = email,
-                    role = role 
-                };
+                    StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                string stringJson = JsonConvert.SerializeObject(jsonData);
-                StringContent sendThis = new StringContent(stringJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(url, sendThis);
-                response.EnsureSuccessStatusCode();
-                string responseText = await response.Content.ReadAsStringAsync();
-                MessageBox.Show(responseText);
-                return true;
+                    if (methodType.ToLower() == "post")
+                    {
+                        response = await client.PostAsync(url, content);
+                    }
+                    else if (methodType.ToLower() == "put")
+                    {
+                        response = await client.PutAsync(url, content);
+                    }
+                }
+                else
+                {
+                    if (methodType.ToLower() == "delete")
+                    {
+                        response = await client.DeleteAsync(url);
+                    }
+                    else if (methodType.ToLower() == "get")
+                    {
+                        response = await client.GetAsync(url);
+                    }
+                }
+
+                responseText = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show($"Hiba a szerver válaszában: {response.StatusCode}\n{responseText}", "hiba");
+                    return null;
+                }
+
+                return responseText;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.Message);
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(responseText) && responseText.TrimStart().StartsWith("{"))
+                    {
+                        string message = JsonConvert.DeserializeObject<Message>(responseText)?.message;
+                        MessageBox.Show(message ?? "ismeretlen hiba", "hiba");
+                    }
+                    else
+                    {
+                        MessageBox.Show("nem json válasz érkezett a szervertől", "hiba");
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("hiba történt a hibaüzenet feldolgozása során", "hiba");
+                }
             }
 
-            return false;
+            return null;
         }
 
-        public async Task<JsonResponse> Login(string username, string password)
+        private void authHeader()
         {
-            string url = baseUrl + "/auth/login";
-            JsonResponse oneJsonResponse = new JsonResponse() { username=null};
+            if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+            }
+        }
 
+        public async Task<bool> login(string username, string password)
+        {
             try
             {
-                var jsonData = new
+                var json = new
                 {
                     loginUsername = username,
                     loginPassword = password
                 };
 
-                string stringJson = JsonConvert.SerializeObject(jsonData);
-                StringContent sendThis = new StringContent(stringJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(url, sendThis);
-                response.EnsureSuccessStatusCode();
-                string responseText = await response.Content.ReadAsStringAsync();
-                JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
-                MessageBox.Show(responseText);
+                string data = JsonConvert.SerializeObject(json);
+                object response = await Connection("post", "/auth/login", data);
 
-                var allusers = await GetUserprofiles();
-                var matchedusers = allusers.Find(use => use.username == username);
-                if (matchedusers != null)
-                {
-                    matchedusers.id = matchedusers.id;
-                    matchedusers.username = matchedusers.username;
-                    matchedusers.password = matchedusers.password;
-                    matchedusers.email = matchedusers.email;
-                    matchedusers.role = matchedusers.role;
-                    matchedusers.Fullname = matchedusers.Fullname;
-                    matchedusers.létrehozásDátuma = matchedusers.létrehozásDátuma;
-                }
-
-                responseJson.token = responseJson.token;
-
-                MessageBox.Show("Login was successful");
-
-                return responseJson;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            return oneJsonResponse;
-        }
-
-
-        public async Task Save(JsonResponse data)
-        {
-            string url = baseUrl + "/save";
-
-            try
-            {
-                var jsonData = new
-                {
-                    NewUsername = data.username,
-                    NewPassword = data.password
-                };
-
-                string stringJson = JsonConvert.SerializeObject(jsonData);
-                StringContent sendThis = new StringContent(stringJson, Encoding.UTF8, "application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", data.token);
-                HttpResponseMessage response = await client.PutAsync(url, sendThis);
-                response.EnsureSuccessStatusCode();
-                string responseText = await response.Content.ReadAsStringAsync();
-                MessageBox.Show(responseText);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        public async Task<bool> PostAppointment(Appointment userappo)
-        {
-            string url = baseUrl + "/appointment";
-
-            try
-            {
-                var jsonData = new
-                {
-                    timeslotId = userappo.timeslotId,
-                    páciensId = userappo.páciensId,
-                    név = userappo.név,
-                    megjegyzés = userappo.megjegyzés,
-                    létrehozásDátuma = userappo.létrehozásDátuma
-                };
-
-                string StringJson = JsonConvert.SerializeObject(jsonData);
-                StringContent sendThis = new StringContent(StringJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(url, sendThis);
-                string res = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                {
-                    MessageBox.Show("You have already booked this.");
+                if (response == null)
                     return false;
-                }
-                else
-                {
-                    response.EnsureSuccessStatusCode();
-                    MessageBox.Show($"Successfully booked: {res}");
-                }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            return false;
-        }
-
-        public async Task<bool> PostUserprofile(Userprofile userfile)
-        {
-            string url = baseUrl + "/user";
-
-            try
-            {
-                var jsonData = new
-                {
-                    NewFullName = userfile.Fullname,
-                    NewEmail = userfile.email,
-                    NewUsername = userfile.username,
-                    NewPassword = userfile.password
-                };
-
-                string stringJson = JsonConvert.SerializeObject(jsonData);
-                StringContent sendThis = new StringContent(stringJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(url, sendThis);
-                string res = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                {
-                    MessageBox.Show("This user already exists");
-                    return false;
-                }
-                else
-                {
-                    response.EnsureSuccessStatusCode();
-                    MessageBox.Show($"Registration successful: {res}");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            return false;
-        }
-
-        public async Task Deleteone(int id)
-        {
-            string url = baseUrl + $"/user/{id}";
-
-            try
-            {
-                HttpResponseMessage response = await client.DeleteAsync(url);
-                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
-                {
-                    MessageBox.Show("Successfully deleted.");
-                }
-                else
-                {
-                    string res = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Failed to delete: {res}");
-                }
+                LoginInfo responseData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
+                Token.token = responseData.token;
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.Message, "hiba");
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<List<Userprofile>> GetUserprofiles()
+        {
+            List<Userprofile> users = new List<Userprofile>();
+
+            try
+            {
+                object request = await Connection("get", "/users/all");
+
+                if (request == null)
+                    return users;
+
+                users = JsonConvert.DeserializeObject<List<Userprofile>>(request as string);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "hiba");
+            }
+
+            return users;
+        }
+
+        public async Task<List<Appointment>> GetAppointments()
+        {
+            List<Appointment> all = new List<Appointment>();
+
+            try
+            {
+                object request = await Connection("get", "/appointments");
+
+                if (request == null)
+                    return all;
+
+                all = JsonConvert.DeserializeObject<List<Appointment>>(request as string);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "hiba");
+            }
+
+            return all;
+        }
+
+        public async Task<bool> Registration(string username, string password, string email, string role, string fullname)
+        {
+            try
+            {
+                var json = new
+                {
+                    RegisterUsername = username,
+                    RegisterPassword = password,
+                    RegisterEmail = email,
+                    fullname = fullname,
+                    role = role
+                };
+
+                string data = JsonConvert.SerializeObject(json);
+                object response = await Connection("post", "/auth/register", data);
+
+                if (response == null)
+                    return false;
+
+                Userprofile responseData = JsonConvert.DeserializeObject<Userprofile>(response as string);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "hiba");
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> Deleteone(int id)
+        {
+            try
+            {
+                string url = $"/user/{id}";
+                object request = await Connection("delete", url);
+
+                if (request == null) return false;
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Hiba");
+                return false;
             }
         }
     }

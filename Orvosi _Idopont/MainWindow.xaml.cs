@@ -8,7 +8,7 @@ namespace Orvosi__Idopont
 {
     public partial class MainWindow : Window
     {
-        Serverconnection connection = new Serverconnection("http://127.1.1.1:3000");
+        Serverconnection connection = new Serverconnection();
 
         public MainWindow()
         {
@@ -41,11 +41,11 @@ namespace Orvosi__Idopont
         async void Book_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(FullnameInput.Text) ||
-                string.IsNullOrWhiteSpace(passwordinput.Text) ||
+               string.IsNullOrWhiteSpace(passwordinput.Text) ||
                 string.IsNullOrWhiteSpace(userinput.Text) ||
-                string.IsNullOrWhiteSpace(emailinput.Text) ||
-                string.IsNullOrWhiteSpace(roleinput.Text) ||
-                dateinput.SelectedDate == null)
+               string.IsNullOrWhiteSpace(emailinput.Text) ||
+                 string.IsNullOrWhiteSpace(roleinput.Text))
+
             {
                 MessageBox.Show("Please fill in all the boxes");
                 return;
@@ -69,7 +69,14 @@ namespace Orvosi__Idopont
                 role = rolechange,
             };
 
-            await connection.PostUserprofile(oneUser);
+            await connection.Registration(
+                       userinput.Text,
+                        passwordinput.Text,
+                       emailinput.Text,
+                        rolechange,
+                    FullnameInput.Text
+               );
+
             MessageBox.Show("Your registration is confirmed");
         }
 
@@ -92,33 +99,9 @@ namespace Orvosi__Idopont
             return slots;
         }
 
-        private void Morning_Checked(object sender, RoutedEventArgs e)
-        {
-            Afternoon.IsChecked = false;
+   
 
-            TimeSlotsList.Items.Clear();
-
-            var morningslots = GenerateSlot(TimeSpan.FromHours(9), TimeSpan.FromHours(12), 15);
-
-            foreach (var item in morningslots)
-            {
-                TimeSlotsList.Items.Add(item);
-            }
-        }
-
-        private void Afternoon_Checked(object sender, RoutedEventArgs e)
-        {
-            Morningslot.IsChecked = false;
-
-            TimeSlotsList.Items.Clear();
-
-            var afternoonSlot = GenerateSlot(TimeSpan.FromHours(13), TimeSpan.FromHours(17), 15);
-
-            foreach (var item in afternoonSlot)
-            {
-                TimeSlotsList.Items.Add(item);
-            }
-        }
+        
 
         private void Return_click(object sender, RoutedEventArgs e)
         {

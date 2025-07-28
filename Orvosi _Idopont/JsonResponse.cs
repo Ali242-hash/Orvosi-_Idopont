@@ -6,12 +6,15 @@ namespace Orvosi__Idopont
     public class Userprofile
     {
         public int id { get; set; }
+
+        [JsonProperty("fullname")]
         public string Fullname { get; set; }
+
         public string email { get; set; }
         public string password { get; set; }
         public string username { get; set; }
         public string role { get; set; }
-        public DateTime? létrehozásDátuma { get; set; } 
+        public DateTime? létrehozásDátuma { get; set; }
     }
 
     public class Appointment
@@ -25,6 +28,7 @@ namespace Orvosi__Idopont
 
     public class LoginInfo
     {
+      
         public string token { get; set; }
         public string Registerrole { get; set; }
         public string message { get; set; }
@@ -41,13 +45,13 @@ namespace Orvosi__Idopont
 
         [JsonProperty("fullname")]
         public string Fullname { get; set; }
+        public string role { get; set; }
 
         [JsonProperty("email")]
         public string Email { get; set; }
 
         public string username { get; set; }
         public string password { get; set; }
-        public string role { get; set; }
         public bool active { get; set; }
 
         [JsonProperty("létrehozásDátuma")]
@@ -55,5 +59,10 @@ namespace Orvosi__Idopont
 
         public string token { get; set; }
         public string message { get; set; }
+    }
+
+    public class Token
+    {
+        public static string token { get; set; }
     }
 }
