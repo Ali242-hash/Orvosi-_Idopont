@@ -88,50 +88,49 @@ namespace Orvosi__Idopont
 
         private async void Shift_Confirm(object sender, RoutedEventArgs e)
         {
-            if(DoctorDatePicker.SelectedDate == null)
+            if (DoctorDatePicker.SelectedDate == null)
             {
                 MessageBox.Show("Please select either(Morning or Afternoon) Shift");
                 return;
             }
 
-            var shifttype = Morningdoc.IsChecked==true? "délelőtt":
-                Afternoondoc.IsChecked == true ? "délután" : null;
+            var selectedDoctor = DoctorsList.SelectedItem as DoctorInfo;
+            if (selectedDoctor == null)
+            {
+                MessageBox.Show("Please select a doctor from the list.");
+                return;
+            }
+
+            var shifttype = Morningdoc.IsChecked == true ? "délelőtt" :
+                            Afternoondoc.IsChecked == true ? "délután" : null;
 
             var selectedDate = DoctorDatePicker.SelectedDate.Value.ToString("yyyy-MM-dd");
-            if (selectedDate == null)
-            {
-                MessageBox.Show("Please select either(Morning or Afternoon) Shift");
-                return;
-            }
 
             var jsonData = new
             {
-                doctorId = 1,
+                doctorId = selectedDoctor.id,
                 dátum = selectedDate,
-                típus =shifttype,
+                típus = shifttype,
                 active = true,
             };
 
-            using(HttpClient client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
                 var stringJson = JsonConvert.SerializeObject(jsonData);
-                var content = new StringContent(stringJson,Encoding.UTF8,"application/json");
+                var content = new StringContent(stringJson, Encoding.UTF8, "application/json");
                 var response = await client.PostAsync("http://127.1.1.1:3000/shifts", content);
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Your shift confirmed");
-                    
                 }
-
                 else
                 {
                     string mesg = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Your shift login did not go through,please try again {mesg}");
+                    MessageBox.Show($"Your shift login did not go through, please try again\n{mesg}");
                 }
             }
-
-
         }
 
-     }
+
+    }
 }

@@ -41,24 +41,24 @@ namespace Orvosi__Idopont
         public async Task<List<Appointment>> GetAppointments()
         {
             string url = baseUrl + "/appointments";
-            List<Appointment> allap = new List<Appointment>();
+            List<Appointment> all = new List<Appointment>();
 
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 string res = await response.Content.ReadAsStringAsync();
-                allap = JsonConvert.DeserializeObject<List<Appointment>>(res);
+                all = JsonConvert.DeserializeObject<List<Appointment>>(res);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
-            return allap;
+            return all;
         }
 
-        public async Task<bool> Registration(string username, string password, string email)
+        public async Task<bool> Registration(string username, string password, string email, string role)
         {
             string url = baseUrl + "/auth/register";
 
@@ -69,6 +69,7 @@ namespace Orvosi__Idopont
                     RegisterUsername = username,
                     RegisterPassword = password,
                     RegisterEmail = email,
+                    role = role 
                 };
 
                 string stringJson = JsonConvert.SerializeObject(jsonData);
@@ -76,7 +77,6 @@ namespace Orvosi__Idopont
                 HttpResponseMessage response = await client.PostAsync(url, sendThis);
                 response.EnsureSuccessStatusCode();
                 string responseText = await response.Content.ReadAsStringAsync();
-                JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
                 MessageBox.Show(responseText);
                 return true;
             }
@@ -90,16 +90,15 @@ namespace Orvosi__Idopont
 
         public async Task<JsonResponse> Login(string username, string password)
         {
-            string url = baseUrl + "/auth/login";  
-
-            JsonResponse oneJsonResponse = new JsonResponse() { username = null };
+            string url = baseUrl + "/auth/login";
+            JsonResponse oneJsonResponse = new JsonResponse() { username=null};
 
             try
             {
                 var jsonData = new
                 {
                     loginUsername = username,
-                    loginPassword = password,
+                    loginPassword = password
                 };
 
                 string stringJson = JsonConvert.SerializeObject(jsonData);
@@ -110,8 +109,22 @@ namespace Orvosi__Idopont
                 JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
                 MessageBox.Show(responseText);
 
-                responseJson.username = username;
-                responseJson.password = password;
+                var allusers = await GetUserprofiles();
+                var matchedusers = allusers.Find(use => use.username == username);
+                if (matchedusers != null)
+                {
+                    matchedusers.id = matchedusers.id;
+                    matchedusers.username = matchedusers.username;
+                    matchedusers.password = matchedusers.password;
+                    matchedusers.email = matchedusers.email;
+                    matchedusers.role = matchedusers.role;
+                    matchedusers.Fullname = matchedusers.Fullname;
+                    matchedusers.létrehozásDátuma = matchedusers.létrehozásDátuma;
+                }
+
+                responseJson.token = responseJson.token;
+
+                MessageBox.Show("Login was successful");
 
                 return responseJson;
             }
@@ -123,7 +136,8 @@ namespace Orvosi__Idopont
             return oneJsonResponse;
         }
 
-        public async Task Save(JsonResponse data)  
+
+        public async Task Save(JsonResponse data)
         {
             string url = baseUrl + "/save";
 
@@ -131,7 +145,8 @@ namespace Orvosi__Idopont
             {
                 var jsonData = new
                 {
-                    data = data.token,
+                    NewUsername = data.username,
+                    NewPassword = data.password
                 };
 
                 string stringJson = JsonConvert.SerializeObject(jsonData);
@@ -140,7 +155,6 @@ namespace Orvosi__Idopont
                 HttpResponseMessage response = await client.PutAsync(url, sendThis);
                 response.EnsureSuccessStatusCode();
                 string responseText = await response.Content.ReadAsStringAsync();
-                JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
                 MessageBox.Show(responseText);
             }
             catch (Exception ex)
@@ -161,7 +175,7 @@ namespace Orvosi__Idopont
                     páciensId = userappo.páciensId,
                     név = userappo.név,
                     megjegyzés = userappo.megjegyzés,
-                    létrehozásDátuma = userappo.létrehozásDátuma,
+                    létrehozásDátuma = userappo.létrehozásDátuma
                 };
 
                 string StringJson = JsonConvert.SerializeObject(jsonData);
@@ -171,22 +185,20 @@ namespace Orvosi__Idopont
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    var Notsucc = JsonConvert.DeserializeObject<Message>(res);
-                    MessageBox.Show("you have already logedin ");
+                    MessageBox.Show("You have already booked this.");
                     return false;
                 }
                 else
                 {
                     response.EnsureSuccessStatusCode();
-                    var Sucdelete = JsonConvert.DeserializeObject<Message>(res);
-                    MessageBox.Show($"Sikerült törölni: {res}");
+                    MessageBox.Show($"Successfully booked: {res}");
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}");
+                MessageBox.Show(ex.Message);
             }
 
             return false;
@@ -194,7 +206,7 @@ namespace Orvosi__Idopont
 
         public async Task<bool> PostUserprofile(Userprofile userfile)
         {
-            string url = baseUrl + "/user"; 
+            string url = baseUrl + "/user";
 
             try
             {
@@ -203,26 +215,23 @@ namespace Orvosi__Idopont
                     NewFullName = userfile.Fullname,
                     NewEmail = userfile.email,
                     NewUsername = userfile.username,
-                    NewPassword = userfile.password,
+                    NewPassword = userfile.password
                 };
 
                 string stringJson = JsonConvert.SerializeObject(jsonData);
                 StringContent sendThis = new StringContent(stringJson, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PostAsync(url, sendThis);
-
                 string res = await response.Content.ReadAsStringAsync();
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    var Notsucc = JsonConvert.DeserializeObject<Message>(res);
-                    MessageBox.Show("This user already exist");
+                    MessageBox.Show("This user already exists");
                     return false;
                 }
                 else
                 {
                     response.EnsureSuccessStatusCode();
-                    var yesSuc = JsonConvert.DeserializeObject<Message>(res);
-                    MessageBox.Show($"Your login was successful: {res}");
+                    MessageBox.Show($"Registration successful: {res}");
                     return true;
                 }
             }
@@ -243,12 +252,12 @@ namespace Orvosi__Idopont
                 HttpResponseMessage response = await client.DeleteAsync(url);
                 if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    MessageBox.Show("Sikerült törölni.");  
+                    MessageBox.Show("Successfully deleted.");
                 }
                 else
                 {
                     string res = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Nem sikerült törölni: {res}");
+                    MessageBox.Show($"Failed to delete: {res}");
                 }
             }
             catch (Exception e)
