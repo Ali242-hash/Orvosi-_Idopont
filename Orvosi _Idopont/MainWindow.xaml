@@ -32,11 +32,7 @@
                         <ComboBoxItem Content="Admin" Name="admininput" FontSize="12" FontWeight="Bold"/>
                     </ComboBox>
                     <Label Content="Select Date" FontSize="12" FontWeight="Bold"/>
-                    <DatePicker  Name="dateinput"  Margin="0 0 0 10"/>
-                    <Label FontWeight="Bold" FontSize="12" Content="Time Slot"/>
-                    <CheckBox Checked="Morning_Checked" Name="Morningslot" Content="Morning" Margin="0 20 0 10" />
-                    <CheckBox Checked="Afternoon_Checked" Name="Afternoon" Content="Afternoon" Margin="0 20 0 10" />
-                    <ListBox Name="TimeSlotsList" Height="110" />
+                   
 
                     <Button x:Name="Docpage" IsDefault="True"   FontSize="10" Content="Doctor Information" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10" Click= "Doc_Click"  />
                     <Button x:Name="Bookpage" IsDefault="True"  FontSize="10" Click="Book_Click"  Content="Book Appointment" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold"  Margin="0,0,0,10"  />

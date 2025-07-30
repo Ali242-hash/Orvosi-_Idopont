@@ -9,7 +9,7 @@ namespace Orvosi__Idopont
 {
     public partial class Administration : Window
     {
-        Serverconnection connection = new Serverconnection("http://127.1.1.1:3000");
+        Serverconnection connection = new Serverconnection();
         public Administration()
         {
             InitializeComponent();
