@@ -10,28 +10,26 @@ namespace Orvosi__Idopont
 {
     public class Serverconnection
     {
-        private readonly HttpClient client = new HttpClient();
-        private readonly string baseUrl = string.Empty;
+        HttpClient client = new HttpClient();
+        string baseUrl = string.Empty;
 
         public Serverconnection()
         {
             baseUrl = "http://127.1.1.1:3000";
         }
 
-        private async Task<object> Connection(string methodType, string urlString, string jsonString = null)
+        private async Task<object> Connection(string urlStirng, string methodType, string jsonString = null)
         {
-            authHeader();
-            string url = baseUrl + urlString;
-
-            string responseText = null;
+            authHead();
+            string url = baseUrl + urlStirng;
 
             if ((methodType.ToLower() == "get" || methodType.ToLower() == "post" || methodType.ToLower() == "delete") && jsonString != null)
             {
-                MessageBox.Show("get,post and delete is working");
+                MessageBox.Show("kosenanat");
                 return null;
             }
 
-            responseText = string.Empty;
+            string responseText = string.Empty;
 
             try
             {
@@ -52,54 +50,40 @@ namespace Orvosi__Idopont
                 }
                 else
                 {
-                    if (methodType.ToLower() == "delete")
-                    {
-                        response = await client.DeleteAsync(url);
-                    }
-                    else if (methodType.ToLower() == "get")
+                    if (methodType.ToLower() == "get")
                     {
                         response = await client.GetAsync(url);
                     }
+                    else if (methodType.ToLower() == "delete")
+                    {
+                        response = await client.DeleteAsync(url);
+                    }
                 }
 
-                responseText = await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
+                if (response.Content != null)
                 {
-                    MessageBox.Show($"Hiba a szerver válaszában: {response.StatusCode}\n{responseText}", "hiba");
-                    return null;
+                    responseText = await response.Content.ReadAsStringAsync();
                 }
 
+                response.EnsureSuccessStatusCode();
                 return responseText;
             }
             catch (Exception)
             {
-                try
-                {
-                    if (!string.IsNullOrWhiteSpace(responseText) && responseText.TrimStart().StartsWith("{"))
-                    {
-                        string message = JsonConvert.DeserializeObject<Message>(responseText)?.message;
-                        MessageBox.Show(message ?? "ismeretlen hiba", "hiba");
-                    }
-                    else
-                    {
-                        MessageBox.Show("nem json válasz érkezett a szervertől", "hiba");
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("hiba történt a hibaüzenet feldolgozása során", "hiba");
-                }
+                string message = JsonConvert.DeserializeObject<Message>(responseText).message;
+                MessageBox.Show(message, "hiba");
             }
 
             return null;
         }
 
-        private void authHeader()
+
+
+        private void authHead()
         {
             if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
             {
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer" + Token.token);
             }
         }
 
@@ -114,17 +98,16 @@ namespace Orvosi__Idopont
                 };
 
                 string data = JsonConvert.SerializeObject(json);
-                object response = await Connection("post", "/auth/login", data);
-
+                object response = await Connection("/auth/login", "post", data);
                 if (response == null)
                     return false;
 
-                LoginInfo responseData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
-                Token.token = responseData.token;
+                LoginInfo responsData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
+                Token.token = responsData.token;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(e.Message, "hiba");
+                MessageBox.Show(ex.Message, "hiba");
                 return false;
             }
 
@@ -137,16 +120,15 @@ namespace Orvosi__Idopont
 
             try
             {
-                object request = await Connection("get", "/users/all");
-
-                if (request == null)
+                object response = await Connection("/users/all", "get");
+                if (response == null)
                     return users;
 
-                users = JsonConvert.DeserializeObject<List<Userprofile>>(request as string);
+                users = JsonConvert.DeserializeObject<List<Userprofile>>(response as string);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(e.Message, "hiba");
+                MessageBox.Show(ex.Message, "hiba");
             }
 
             return users;
@@ -158,7 +140,7 @@ namespace Orvosi__Idopont
 
             try
             {
-                object request = await Connection("get", "/appointments");
+                object request = await Connection("/appointments", "get");
 
                 if (request == null)
                     return all;
@@ -187,16 +169,15 @@ namespace Orvosi__Idopont
                 };
 
                 string data = JsonConvert.SerializeObject(json);
-                object response = await Connection("post", "/auth/register", data);
-
-                if (response == null)
+                object request = await Connection("/auth/register/", "post", data);
+                if (request == null)
                     return false;
 
-                Userprofile responseData = JsonConvert.DeserializeObject<Userprofile>(response as string);
+                Userprofile responsedata = JsonConvert.DeserializeObject<Userprofile>(request as string);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(e.Message, "hiba");
+                MessageBox.Show(ex.Message, "hiba");
                 return false;
             }
 
@@ -207,18 +188,17 @@ namespace Orvosi__Idopont
         {
             try
             {
-                string url = $"/user/{id}";
-                object request = await Connection("delete", url);
-
+                string url = $"/users/{id}";
+                object request = await Connection(url,"delete" );
                 if (request == null) return false;
-
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(e.Message, "Hiba");
-                return false;
+                MessageBox.Show(ex.Message, "hiba");
             }
+
+            return false;
         }
     }
 }
