@@ -13,6 +13,7 @@ namespace Orvosi__Idopont
         public MainWindow()
         {
             InitializeComponent();
+           
         }
 
         private void Window_key(object sender, KeyEventArgs e)
@@ -69,13 +70,24 @@ namespace Orvosi__Idopont
                 role = rolechange,
             };
 
+           
             await connection.Registration(
-                       userinput.Text,
-                        passwordinput.Text,
-                       emailinput.Text,
-                        rolechange,
-                    FullnameInput.Text
-               );
+                userinput.Text,
+                passwordinput.Text,
+                emailinput.Text,
+                rolechange,
+                FullnameInput.Text
+            );
+
+          
+            if (rolechange == "patient")
+            {
+                await connection.Appointment(
+                    FullnameInput.Text,
+                    userinput.Text,
+                    emailinput.Text
+                );
+            }
 
             MessageBox.Show("Your registration is confirmed");
         }
@@ -98,10 +110,6 @@ namespace Orvosi__Idopont
             }
             return slots;
         }
-
-   
-
-        
 
         private void Return_click(object sender, RoutedEventArgs e)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,17 +16,17 @@ namespace Orvosi__Idopont
 
         public Serverconnection()
         {
-            baseUrl = "http://127.1.1.1:3000";
+            baseUrl = "http://127.0.0.1:3000";
         }
 
-        private async Task<object> Connection(string urlStirng, string methodType, string jsonString = null)
+        private async Task<object> Connection(string urlString, string methodType, string jsonString = null)
         {
             authHead();
-            string url = baseUrl + urlStirng;
 
+            string url = baseUrl + urlString;
             if ((methodType.ToLower() == "get" || methodType.ToLower() == "post" || methodType.ToLower() == "delete") && jsonString != null)
             {
-                MessageBox.Show("kosenanat");
+                MessageBox.Show("Function wroking well");
                 return null;
             }
 
@@ -34,7 +35,6 @@ namespace Orvosi__Idopont
             try
             {
                 HttpResponseMessage response = new HttpResponseMessage();
-
                 if (jsonString != null)
                 {
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -63,31 +63,47 @@ namespace Orvosi__Idopont
                 if (response.Content != null)
                 {
                     responseText = await response.Content.ReadAsStringAsync();
+                    response.EnsureSuccessStatusCode();
+                    return responseText;
                 }
-
-                response.EnsureSuccessStatusCode();
-                return responseText;
             }
             catch (Exception)
             {
-                string message = JsonConvert.DeserializeObject<Message>(responseText).message;
-                MessageBox.Show(message, "hiba");
+                if (!string.IsNullOrWhiteSpace(responseText))
+
+                    try
+                    {
+                        string message = JsonConvert.DeserializeObject<Message>(responseText).message;
+                        MessageBox.Show(message, "hiba");
+                    }
+                    catch
+                {
+
+                        MessageBox.Show("Hiba tortent aza fasyz");
+
+                }
+                else
+                {
+                    MessageBox.Show("Ismereten hiba tortent", "hiba");
+                }
             }
+
+            
 
             return null;
         }
 
-
-
         private void authHead()
         {
-            if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
+            if (!string.IsNullOrEmpty(Token.token))
             {
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer" + Token.token);
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
             }
         }
 
-        public async Task<bool> login(string username, string password)
+
+        public async Task<bool> Login(string username, string password)
         {
             try
             {
@@ -102,17 +118,22 @@ namespace Orvosi__Idopont
                 if (response == null)
                     return false;
 
-                LoginInfo responsData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
-                Token.token = responsData.token;
+       
+                LoginInfo responseData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
+                Token.token = responseData.token;
+
+                authHead();
+                return true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(ex.Message, "hiba");
+                MessageBox.Show(e.Message, "hiba");
                 return false;
             }
-
-            return true;
         }
+
+
+
 
         public async Task<List<Userprofile>> GetUserprofiles()
         {
@@ -134,26 +155,29 @@ namespace Orvosi__Idopont
             return users;
         }
 
-        public async Task<List<Appointment>> GetAppointments()
+        public async Task<List<Appointment>> Appointment(string name, string username, string email)
         {
-            List<Appointment> all = new List<Appointment>();
+           List<Appointment> all = new List<Appointment>();
 
             try
             {
-                object request = await Connection("/appointments", "get");
+                object response = await Connection("/appointments", "get");
+                if(response == null) return all;
 
-                if (request == null)
-                    return all;
+                all= JsonConvert.DeserializeObject<List<Appointment>>(response as string);
 
-                all = JsonConvert.DeserializeObject<List<Appointment>>(request as string);
             }
-            catch (Exception ex)
+
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "hiba");
             }
-
             return all;
         }
+
+
+
+
 
         public async Task<bool> Registration(string username, string password, string email, string role, string fullname)
         {
@@ -169,11 +193,10 @@ namespace Orvosi__Idopont
                 };
 
                 string data = JsonConvert.SerializeObject(json);
-                object request = await Connection("/auth/register/", "post", data);
-                if (request == null)
-                    return false;
+                object response = await Connection("/auth/register", "post", data);
+                if (response == null) return false;
 
-                Userprofile responsedata = JsonConvert.DeserializeObject<Userprofile>(request as string);
+                Userprofile users = JsonConvert.DeserializeObject<Userprofile>(response as string);
             }
             catch (Exception ex)
             {
@@ -186,11 +209,13 @@ namespace Orvosi__Idopont
 
         public async Task<bool> Deleteone(int id)
         {
+            string url = $"/users/{id}";
+
             try
             {
-                string url = $"/users/{id}";
-                object request = await Connection(url,"delete" );
-                if (request == null) return false;
+                object response = await Connection(url, "delete");
+                if (response == null) return false;
+
                 return true;
             }
             catch (Exception ex)
@@ -200,5 +225,7 @@ namespace Orvosi__Idopont
 
             return false;
         }
+
+       
     }
 }

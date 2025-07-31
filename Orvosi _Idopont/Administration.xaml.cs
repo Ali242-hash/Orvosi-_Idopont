@@ -85,9 +85,6 @@ namespace Orvosi__Idopont
             string adminmail = Adminemail.Text;
             string adminPass = AdminPass.Text;
 
-            string inputadmin = "admin@admin.com";
-            string inputpass = "admin123qwe";
-
             if (string.IsNullOrEmpty(adminmail) || string.IsNullOrEmpty(adminPass) ||
                 adminmail == "Email" || adminPass == "Password")
             {
@@ -95,12 +92,12 @@ namespace Orvosi__Idopont
                 return;
             }
 
-            if (adminmail == inputadmin && adminPass == inputpass)
+            if (adminmail == "admin@admin.com" && adminPass == "admin123qwe")
             {
                 MessageBox.Show("Admin registered");
                 MainWindow mainpage = new MainWindow();
                 mainpage.Show();
-                
+
                 Loadinginfo();
             }
             else
@@ -108,6 +105,7 @@ namespace Orvosi__Idopont
                 MessageBox.Show("Please enter correct information.");
             }
         }
+
 
         private void RemoveText(object sender, EventArgs e)
         {
