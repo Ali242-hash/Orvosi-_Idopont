@@ -13,7 +13,6 @@ namespace Orvosi__Idopont
         public MainWindow()
         {
             InitializeComponent();
-           
         }
 
         private void Window_key(object sender, KeyEventArgs e)
@@ -46,7 +45,6 @@ namespace Orvosi__Idopont
                 string.IsNullOrWhiteSpace(userinput.Text) ||
                string.IsNullOrWhiteSpace(emailinput.Text) ||
                  string.IsNullOrWhiteSpace(roleinput.Text))
-
             {
                 MessageBox.Show("Please fill in all the boxes");
                 return;
@@ -63,11 +61,11 @@ namespace Orvosi__Idopont
             Userprofile oneUser = new Userprofile()
             {
                 Fullname = FullnameInput.Text,
-                email = emailinput.Text,
-                username = userinput.Text,
-                password = passwordinput.Text,
-                létrehozásDátuma = DateTime.Now,
-                role = rolechange,
+                Email = emailinput.Text,
+                Username = userinput.Text,
+                Password = passwordinput.Text,
+                LétrehozásDátuma = DateTime.Now,
+                Role = rolechange,
             };
 
            
@@ -79,13 +77,20 @@ namespace Orvosi__Idopont
                 FullnameInput.Text
             );
 
-          
             if (rolechange == "patient")
             {
-                await connection.Appointment(
-                    FullnameInput.Text,
-                    userinput.Text,
-                    emailinput.Text
+                bool isLoggedin = await connection.Login(userinput.Text, passwordinput.Text);
+                if (!isLoggedin)
+                {
+                    MessageBox.Show("Login has failed");
+                    return;
+                }
+
+                int selectedTimeslotId = 2;
+               
+                await connection.loginAppointment(
+                    selectedTimeslotId,
+                    FullnameInput.Text
                 );
             }
 

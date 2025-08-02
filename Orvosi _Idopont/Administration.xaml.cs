@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
+
 namespace Orvosi__Idopont
 {
     public partial class Administration : Window
@@ -37,10 +38,10 @@ namespace Orvosi__Idopont
 
                     StackPanel panelgrid = new StackPanel() { Orientation=Orientation.Vertical};
                     panelgrid.Children.Add(new Label() { Content = $"Name: {profile.Fullname}" });
-                    panelgrid.Children.Add(new Label() { Content=$"Username: {profile.username}"});
-                    panelgrid.Children.Add(new Label() { Content = $"Password: {profile.password}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Role: {profile.role}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.létrehozásDátuma}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Username: {profile.Username}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Password: {profile.Password}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Role: {profile.Role}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.LétrehozásDátuma}" });
 
                     Grid.SetColumn(panelgrid, 0);
                     grid.Children.Add(panelgrid);
@@ -48,7 +49,7 @@ namespace Orvosi__Idopont
                     Button onebutton = new Button()
                     {
                         Content = "Torles",
-                        Tag = profile.id,
+                        Tag = profile.Id,
                         BorderThickness = new Thickness(5),
                         BorderBrush=new SolidColorBrush(Colors.AliceBlue),
                         Width = 80,
