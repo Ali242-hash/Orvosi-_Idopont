@@ -74,7 +74,7 @@
                 </Border>
             </StackPanel>
 
-           
+
             <ScrollViewer Grid.Column="1"
                           VerticalScrollBarVisibility="Auto"
                           VerticalAlignment="Stretch"

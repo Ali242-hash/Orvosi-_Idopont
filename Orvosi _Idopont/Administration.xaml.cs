@@ -30,13 +30,13 @@ namespace Orvosi__Idopont
                 List<Userprofile> list = await connection.GetUserprofiles();
                 foreach (Userprofile profile in list)
                 {
-                    
+
                     Grid grid = new Grid();
                     grid.Margin = new Thickness(5);
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1,GridUnitType.Star) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-                    StackPanel panelgrid = new StackPanel() { Orientation=Orientation.Vertical};
+                    StackPanel panelgrid = new StackPanel() { Orientation = Orientation.Vertical };
                     panelgrid.Children.Add(new Label() { Content = $"Name: {profile.Fullname}" });
                     panelgrid.Children.Add(new Label() { Content = $"Username: {profile.Username}" });
                     panelgrid.Children.Add(new Label() { Content = $"Password: {profile.Password}" });
@@ -51,7 +51,7 @@ namespace Orvosi__Idopont
                         Content = "Torles",
                         Tag = profile.Id,
                         BorderThickness = new Thickness(5),
-                        BorderBrush=new SolidColorBrush(Colors.AliceBlue),
+                        BorderBrush = new SolidColorBrush(Colors.AliceBlue),
                         Width = 80,
                         Height = 30,
                         Margin = new Thickness(5),
@@ -137,11 +137,11 @@ namespace Orvosi__Idopont
             }
         }
 
-        private void Admin_Click(object s,KeyEventArgs e)
+        private void Admin_Click(object s, KeyEventArgs e)
         {
-            if(e.Key==Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                Enter_admin(s,e);
+                Enter_admin(s, e);
             }
         }
     }
