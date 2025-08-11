@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
+
 namespace Orvosi__Idopont
 {
     public partial class Administration : Window
@@ -29,18 +30,18 @@ namespace Orvosi__Idopont
                 List<Userprofile> list = await connection.GetUserprofiles();
                 foreach (Userprofile profile in list)
                 {
-                    
+
                     Grid grid = new Grid();
                     grid.Margin = new Thickness(5);
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1,GridUnitType.Star) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-                    StackPanel panelgrid = new StackPanel() { Orientation=Orientation.Vertical};
+                    StackPanel panelgrid = new StackPanel() { Orientation = Orientation.Vertical };
                     panelgrid.Children.Add(new Label() { Content = $"Name: {profile.Fullname}" });
-                    panelgrid.Children.Add(new Label() { Content=$"Username: {profile.username}"});
-                    panelgrid.Children.Add(new Label() { Content = $"Password: {profile.password}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Role: {profile.role}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.létrehozásDátuma}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Username: {profile.Username}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Password: {profile.Password}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Role: {profile.Role}" });
+                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.LétrehozásDátuma}" });
 
                     Grid.SetColumn(panelgrid, 0);
                     grid.Children.Add(panelgrid);
@@ -48,9 +49,9 @@ namespace Orvosi__Idopont
                     Button onebutton = new Button()
                     {
                         Content = "Torles",
-                        Tag = profile.id,
+                        Tag = profile.Id,
                         BorderThickness = new Thickness(5),
-                        BorderBrush=new SolidColorBrush(Colors.AliceBlue),
+                        BorderBrush = new SolidColorBrush(Colors.AliceBlue),
                         Width = 80,
                         Height = 30,
                         Margin = new Thickness(5),
@@ -85,9 +86,6 @@ namespace Orvosi__Idopont
             string adminmail = Adminemail.Text;
             string adminPass = AdminPass.Text;
 
-            string inputadmin = "admin@admin.com";
-            string inputpass = "admin123qwe";
-
             if (string.IsNullOrEmpty(adminmail) || string.IsNullOrEmpty(adminPass) ||
                 adminmail == "Email" || adminPass == "Password")
             {
@@ -95,12 +93,12 @@ namespace Orvosi__Idopont
                 return;
             }
 
-            if (adminmail == inputadmin && adminPass == inputpass)
+            if (adminmail == "admin@admin.com" && adminPass == "admin123qwe")
             {
                 MessageBox.Show("Admin registered");
                 MainWindow mainpage = new MainWindow();
                 mainpage.Show();
-                
+
                 Loadinginfo();
             }
             else
@@ -108,6 +106,7 @@ namespace Orvosi__Idopont
                 MessageBox.Show("Please enter correct information.");
             }
         }
+
 
         private void RemoveText(object sender, EventArgs e)
         {
@@ -138,11 +137,11 @@ namespace Orvosi__Idopont
             }
         }
 
-        private void Admin_Click(object s,KeyEventArgs e)
+        private void Admin_Click(object s, KeyEventArgs e)
         {
-            if(e.Key==Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                Enter_admin(s,e);
+                Enter_admin(s, e);
             }
         }
     }

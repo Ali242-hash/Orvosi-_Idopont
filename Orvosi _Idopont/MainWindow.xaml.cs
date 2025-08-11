@@ -45,7 +45,6 @@ namespace Orvosi__Idopont
                 string.IsNullOrWhiteSpace(userinput.Text) ||
                string.IsNullOrWhiteSpace(emailinput.Text) ||
                  string.IsNullOrWhiteSpace(roleinput.Text))
-
             {
                 MessageBox.Show("Please fill in all the boxes");
                 return;
@@ -62,20 +61,38 @@ namespace Orvosi__Idopont
             Userprofile oneUser = new Userprofile()
             {
                 Fullname = FullnameInput.Text,
-                email = emailinput.Text,
-                username = userinput.Text,
-                password = passwordinput.Text,
-                létrehozásDátuma = DateTime.Now,
-                role = rolechange,
+                Email = emailinput.Text,
+                Username = userinput.Text,
+                Password = passwordinput.Text,
+                LétrehozásDátuma = DateTime.Now,
+                Role = rolechange,
             };
 
+           
             await connection.Registration(
-                       userinput.Text,
-                        passwordinput.Text,
-                       emailinput.Text,
-                        rolechange,
+                userinput.Text,
+                passwordinput.Text,
+                emailinput.Text,
+                rolechange,
+                FullnameInput.Text
+            );
+
+            if (rolechange == "patient")
+            {
+                bool isLoggedin = await connection.Login(userinput.Text, passwordinput.Text);
+                if (!isLoggedin)
+                {
+                    MessageBox.Show("Login has failed");
+                    return;
+                }
+
+                int selectedTimeslotId = 2;
+               
+                await connection.loginAppointment(
+                    selectedTimeslotId,
                     FullnameInput.Text
-               );
+                );
+            }
 
             MessageBox.Show("Your registration is confirmed");
         }
@@ -98,10 +115,6 @@ namespace Orvosi__Idopont
             }
             return slots;
         }
-
-   
-
-        
 
         private void Return_click(object sender, RoutedEventArgs e)
         {
