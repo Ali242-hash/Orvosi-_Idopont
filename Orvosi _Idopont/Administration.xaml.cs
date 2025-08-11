@@ -14,72 +14,12 @@ namespace Orvosi__Idopont
         public Administration()
         {
             InitializeComponent();
-            Loadinginfo();
+ 
         }
 
-        async void Loadinginfo()
-        {
-            try
-            {
-                if (Patientinfo == null)
-                {
-                    MessageBox.Show("There is no patient information on this list");
-                    return;
-                }
-                Patientinfo.Children.Clear();
-                List<Userprofile> list = await connection.GetUserprofiles();
-                foreach (Userprofile profile in list)
-                {
+   
 
-                    Grid grid = new Grid();
-                    grid.Margin = new Thickness(5);
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-                    StackPanel panelgrid = new StackPanel() { Orientation = Orientation.Vertical };
-                    panelgrid.Children.Add(new Label() { Content = $"Name: {profile.Fullname}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Username: {profile.Username}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Password: {profile.Password}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Role: {profile.Role}" });
-                    panelgrid.Children.Add(new Label() { Content = $"Date: {profile.LétrehozásDátuma}" });
-
-                    Grid.SetColumn(panelgrid, 0);
-                    grid.Children.Add(panelgrid);
-
-                    Button onebutton = new Button()
-                    {
-                        Content = "Torles",
-                        Tag = profile.Id,
-                        BorderThickness = new Thickness(5),
-                        BorderBrush = new SolidColorBrush(Colors.AliceBlue),
-                        Width = 80,
-                        Height = 30,
-                        Margin = new Thickness(5),
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
-                    Grid.SetColumn(onebutton, 1);
-                    grid.Children.Add(onebutton);
-                    onebutton.Click += DeleteEvent;
-
-                    Patientinfo.Children.Add(grid);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        async void DeleteEvent(object s, RoutedEventArgs e)
-        {
-            Button button = s as Button;
-            if (button != null)
-            {
-                await connection.Deleteone((int)button.Tag);
-                Loadinginfo();
-            }
-        }
 
         private void Enter_admin(object sender, EventArgs e)
         {
@@ -96,10 +36,11 @@ namespace Orvosi__Idopont
             if (adminmail == "admin@admin.com" && adminPass == "admin123qwe")
             {
                 MessageBox.Show("Admin registered");
-                MainWindow mainpage = new MainWindow();
-                mainpage.Show();
+                AdminDashboard Register_Client = new AdminDashboard();
+                Register_Client.Show();
+                this.Close();
 
-                Loadinginfo();
+        
             }
             else
             {
@@ -144,5 +85,24 @@ namespace Orvosi__Idopont
                 Enter_admin(s, e);
             }
         }
+
+        private void Doc_Click(object sender, RoutedEventArgs e)
+        {
+            DoctorsInfo doctorsInfo = new DoctorsInfo();
+            doctorsInfo.Show();
+            this.Close();
+        }
+
+       
+
+        private void Return_click(object sender, RoutedEventArgs e)
+        {
+            Administration adminwindow = new Administration();
+            adminwindow.Show();
+            this.Close();
+        }
+
+
+
     }
 }
