@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuestPDF.Fluent;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,30 +16,16 @@ namespace Orvosi__Idopont
             InitializeComponent();
         }
 
-        private void Window_key(object sender, KeyEventArgs e)
+        public void PDF_Generator(object s, EventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                var allkey = Keyboard.FocusedElement;
-
-                if (allkey == Docpage)
-                    Doc_Click(sender, e);
-                else if (allkey == Bookpage)
-                    Book_Click(sender, e);
-                else if (allkey == cancelconfirm)
-                    Cancel_click(sender, e);
-                else if (allkey == adminpage)
-                    Return_click(sender, e);
-            }
+           var document = new PDF_generator();
+            document.GeneratePdfAndShow();
         }
 
-        public void Cancel_click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-            MessageBox.Show("Your appointment has been canceled");
-        }
+   
+   
 
-        async void Book_Click(object sender, RoutedEventArgs e)
+       private async void Book_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(FullnameInput.Text) ||
                string.IsNullOrWhiteSpace(passwordinput.Text) ||
@@ -50,13 +37,7 @@ namespace Orvosi__Idopont
                 return;
             }
 
-            string rolechange = roleinput.Text.ToLower();
-
-            if (rolechange != "patient" && rolechange != "doctor" && rolechange != "admin")
-            {
-                MessageBox.Show("Please select a valid role");
-                return;
-            }
+         
 
             Userprofile oneUser = new Userprofile()
             {
@@ -65,62 +46,37 @@ namespace Orvosi__Idopont
                 Username = userinput.Text,
                 Password = passwordinput.Text,
                 LétrehozásDátuma = DateTime.Now,
-                Role = rolechange,
+          
             };
 
            
             await connection.Registration(
-                userinput.Text,
-                passwordinput.Text,
-                emailinput.Text,
-                rolechange,
+                 userinput.Text,
+                 passwordinput.Text,
+                 emailinput.Text,
+                 roleinput.Text,        
                 FullnameInput.Text
             );
 
-            if (rolechange == "patient")
-            {
-                bool isLoggedin = await connection.Login(userinput.Text, passwordinput.Text);
-                if (!isLoggedin)
-                {
-                    MessageBox.Show("Login has failed");
-                    return;
-                }
-
-                int selectedTimeslotId = 2;
-               
-                await connection.loginAppointment(
-                    selectedTimeslotId,
-                    FullnameInput.Text
-                );
-            }
+            
 
             MessageBox.Show("Your registration is confirmed");
         }
 
-        private void Doc_Click(object sender, RoutedEventArgs e)
+
+   
+        public void Cancel_click(object sender, RoutedEventArgs e)
         {
-            DoctorsInfo doctorsInfo = new DoctorsInfo();
-            doctorsInfo.Show();
             this.Close();
+            MessageBox.Show("Your appointment has been canceled");
         }
 
-        private List<string> GenerateSlot(TimeSpan start, TimeSpan end, int minutes)
-        {
-            var slots = new List<string>();
+     
 
-            for (TimeSpan time = start; time < end; time = time.Add(TimeSpan.FromMinutes(minutes)))
-            {
-                DateTime timedate = DateTime.Today.Add(time);
-                slots.Add(timedate.ToString("hh:mm tt"));
-            }
-            return slots;
-        }
+ 
 
-        private void Return_click(object sender, RoutedEventArgs e)
-        {
-            Administration adminwindow = new Administration();
-            adminwindow.Show();
-            this.Close();
-        }
+
+
+
     }
 }
