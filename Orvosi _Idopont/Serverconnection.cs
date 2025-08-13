@@ -62,15 +62,19 @@ namespace Orvosi__Idopont
                 {
                     res = JsonConvert.DeserializeObject<Message>(responseText)?.message;
                 }
-                catch { }
-                MessageBox.Show($"Hiba a codot kharkose {res}");
+                catch {
+
+                    MessageBox.Show($"Hiba a codot kharkose {res}");
+
+                }
+                
             }
             return null;
         }
 
         private void authHead()
         {
-            client.DefaultRequestHeaders.Authorization = null;
+           
 
             if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
             {
@@ -94,7 +98,7 @@ namespace Orvosi__Idopont
 
                 LoginInfo reponseData = JsonConvert.DeserializeObject<LoginInfo>(response as string);
                 Token.token = reponseData.token;
-               
+
             }
             catch (Exception ex)
             {
@@ -121,7 +125,7 @@ namespace Orvosi__Idopont
                 string data = JsonConvert.SerializeObject(jsonData);
                 object reponse = await Connection("/auth/register", "post", data);
                 if (reponse == null) return false;
-                Userprofile reponseData = JsonConvert.DeserializeObject<Userprofile>(reponse as string);
+                RegistrationRequest reponseData = JsonConvert.DeserializeObject<RegistrationRequest>(reponse as string);
             }
             catch (Exception ex)
             {
@@ -134,7 +138,7 @@ namespace Orvosi__Idopont
         public async Task<List<Userprofile>> GetUserprofiles()
         {
             List<Userprofile> users = new List<Userprofile>();
-            
+
 
             try
             {
@@ -193,6 +197,8 @@ namespace Orvosi__Idopont
         public async Task<bool> Deleteone(int id)
         {
             string url = $"/users/{id}";
+           MessageBox.Show($"Attempting DELETE at: {baseUrl}{url}");
+            MessageBox.Show ($"Using token: {Token.token}");
 
             try
             {

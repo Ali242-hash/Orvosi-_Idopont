@@ -86,6 +86,7 @@
     <Compile Include="Administration.xaml.cs">
       <DependentUpon>Administration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Appointment.cs" />
     <Compile Include="DoctorInfo.cs" />
     <Compile Include="DoctorRegistration.xaml.cs">
       <DependentUpon>DoctorRegistration.xaml</DependentUpon>
@@ -93,11 +94,14 @@
     <Compile Include="DoctorsInfo.xaml.cs">
       <DependentUpon>DoctorsInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JsonResponse.cs" />
+    <Compile Include="LoginInfo.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="PDF_generator.cs" />
+    <Compile Include="RegistrationRequest.cs" />
     <Compile Include="Serverconnection.cs" />
     <Compile Include="Testfile.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="Userprofile.cs" />
     <Page Include="AdminDashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

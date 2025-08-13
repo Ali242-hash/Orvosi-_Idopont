@@ -57,7 +57,7 @@ namespace Orvosi__Idopont
 
                     Button deleteButton = new Button()
                     {
-                        Content = "Delete", 
+                        Content = "Delete",
                         Tag = profile.Id,
                         BorderThickness = new Thickness(1),
                         BorderBrush = Brushes.Red,
