@@ -10,8 +10,7 @@ namespace Orvosi__Idopont
     {
         public string token { get; set; }
         public string message { get; set; }
-        public string LoginUsername { get; set; }
-        public string LoginPassword { get; set; }
+       
     
     }
 }

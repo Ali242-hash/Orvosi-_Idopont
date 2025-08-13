@@ -62,19 +62,20 @@ namespace Orvosi__Idopont
                 {
                     res = JsonConvert.DeserializeObject<Message>(responseText)?.message;
                 }
-                catch {
+                catch
+                {
 
-                    MessageBox.Show($"Hiba a codot kharkose {res}");
+                  //  MessageBox.Show($"Hiba a codot kharkose {res}");
 
                 }
-                
+
             }
             return null;
         }
 
         private void authHead()
         {
-           
+
 
             if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
             {
@@ -154,7 +155,7 @@ namespace Orvosi__Idopont
             return users;
         }
 
-        public async Task<List<Appointment>> GetAppointments()
+        public async Task<List<Appointment>>GetAppointments()
         {
             List<Appointment> all = new List<Appointment>();
             try
@@ -197,8 +198,7 @@ namespace Orvosi__Idopont
         public async Task<bool> Deleteone(int id)
         {
             string url = $"/users/{id}";
-           MessageBox.Show($"Attempting DELETE at: {baseUrl}{url}");
-            MessageBox.Show ($"Using token: {Token.token}");
+      
 
             try
             {
