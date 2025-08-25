@@ -18,7 +18,7 @@ namespace Orvosi__Idopont
             baseUrl = "http://127.0.0.1:3000";
         }
 
-        private async Task<object> Connection(string urlstring, string methodType, string jsonString = null)
+        public async Task<object> Connection(string urlstring, string methodType, string jsonString = null)
         {
             authHead();
             string url = baseUrl + urlstring;
@@ -160,7 +160,7 @@ namespace Orvosi__Idopont
             List<Appointment> all = new List<Appointment>();
             try
             {
-                object reponse = await Connection("/appointments", "get");
+                object reponse = await Connection("/appointments/history", "get");
                 if (reponse == null) return all;
 
                 all = JsonConvert.DeserializeObject<List<Appointment>>(reponse as string);

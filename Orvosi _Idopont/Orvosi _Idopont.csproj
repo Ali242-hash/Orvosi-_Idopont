@@ -83,6 +83,9 @@
     <Compile Include="AdminDashboard.xaml.cs">
       <DependentUpon>AdminDashboard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AdminHistory.xaml.cs">
+      <DependentUpon>AdminHistory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Administration.xaml.cs">
       <DependentUpon>Administration.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
     <Compile Include="Token.cs" />
     <Compile Include="Userprofile.cs" />
     <Page Include="AdminDashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AdminHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
