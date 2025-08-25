@@ -60,7 +60,7 @@ namespace Orvosi__Idopont
                 string res = string.Empty;
                 try
                 {
-                    res = JsonConvert.DeserializeObject<Message>(responseText)?.message;
+                    res = JsonConvert.DeserializeObject<Message>(responseText).message;
                 }
                 catch
                 {
