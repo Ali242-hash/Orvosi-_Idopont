@@ -38,15 +38,15 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                              
-                                    <Image Grid.Column="0" Source="{Binding profilKépUrl}" Width="130" Height="180"
+                                    <Border  CornerRadius="15" BorderThickness="4" BorderBrush="Lime">
+                                    <Image Grid.Column="0" Source="{Binding profilKépUrl}" Width="160" Height="180"
                                            Stretch="UniformToFill" Margin="5" VerticalAlignment="Top"/>
-
+                                    </Border>
                                  
                                     <StackPanel Grid.Column="1" Margin="10 0 0 0" VerticalAlignment="Top">
                                         <Label Content="{Binding Docname}" FontWeight="Bold" FontSize="16"/>
                                         <Label Content="{Binding specialty}" FontStyle="Italic" FontSize="14"/>
-                                        <Label Content="{Binding treatment}" FontStyle="Italic" FontSize="14"/>
+                                        <Label Content="{Binding treatments}" FontStyle="Italic" FontSize="14"/>
                                         <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="14"/>
                                     </StackPanel>
                                 </Grid>

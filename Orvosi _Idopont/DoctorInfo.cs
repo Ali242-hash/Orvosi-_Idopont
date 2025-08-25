@@ -17,5 +17,7 @@ namespace Orvosi__Idopont
         public string specialty {  get; set; }
 
         public string treatments { get; set; }
+
+        
     }
 }

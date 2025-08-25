@@ -24,6 +24,44 @@ namespace Orvosi__Idopont
         {
             InitializeComponent();
             Loading_Info();
+            Load_Appointments();
+        }
+
+        private async void Load_Appointments()
+        {
+            List<Appointment> appointments = await connection.GetAppointments();
+
+         /*   if (appointments == null)
+            {
+                MessageBox.Show("No appointments found");
+                return;
+            }
+
+            if (appointments.Count == 0)
+            {
+                MessageBox.Show("No appointments found");
+                return;
+            }
+         */
+
+            foreach (Appointment app in appointments)
+            {
+                Grid grid = new Grid();
+                grid.Margin = new Thickness(5);
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(4, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+                StackPanel panel = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Left };
+                panel.Children.Add(new Label() { Content = $"Timeslot ID: {app.TimeslotId}  ", FontWeight = FontWeights.Bold });
+                panel.Children.Add(new Label() { Content = $"Patient Name: {app.Név}  ", FontWeight = FontWeights.Normal });
+                panel.Children.Add(new Label() { Content = $"Patient ID: {app.PaciensId}  ", FontWeight = FontWeights.Normal });
+                panel.Children.Add(new Label() { Content = $"Created: {app.LétrehozásDátuma}  ", FontWeight = FontWeights.Normal });
+
+                Grid.SetColumn(panel, 0);
+                grid.Children.Add(panel);
+
+                Patientinfo.Children.Add(grid);
+            }
         }
 
         async void Loading_Info()
@@ -92,10 +130,5 @@ namespace Orvosi__Idopont
                 Loading_Info();
             }
         }
-
-
-
-
-
     }
 }
