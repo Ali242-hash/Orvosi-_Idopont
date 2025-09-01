@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
 
 namespace Orvosi__Idopont
 {
@@ -14,17 +14,12 @@ namespace Orvosi__Idopont
         public Administration()
         {
             InitializeComponent();
- 
         }
 
-   
-
-
-
-        private void Enter_admin(object sender, EventArgs e)
+        private async Task Enter_admin()
         {
-            string adminmail = Adminemail.Text;
-            string adminPass = AdminPass.Text;
+            string adminmail = Adminemail.Text.Trim();
+            string adminPass = AdminPass.Text.Trim();
 
             if (string.IsNullOrEmpty(adminmail) || string.IsNullOrEmpty(adminPass) ||
                 adminmail == "Email" || adminPass == "Password")
@@ -33,18 +28,26 @@ namespace Orvosi__Idopont
                 return;
             }
 
-            if (adminmail == "admin@admin.com" && adminPass == "admin123qwe")
+            try
             {
-                MessageBox.Show("Admin registered");
-                AdminDashboard Register_Client = new AdminDashboard();
-                Register_Client.Show();
-                this.Close();
+      
+                bool success = await connection.Login(adminmail, adminPass);
 
-        
+                if (success)
+                {
+                    MessageBox.Show("Admin registered");
+                    AdminDashboard adminDashboard = new AdminDashboard();
+                    adminDashboard.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Invalid credential");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please enter correct information.");
+                MessageBox.Show($"Hiba {ex.Message}");
             }
         }
 
@@ -78,12 +81,17 @@ namespace Orvosi__Idopont
             }
         }
 
-        private void Admin_Click(object s, KeyEventArgs e)
+        private async void Admin_Click(object s, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                Enter_admin(s, e);
+                await Enter_admin();
             }
+        }
+
+        private async void Enter_admin(object sender, RoutedEventArgs e)
+        {
+            await Enter_admin();
         }
 
         private void Doc_Click(object sender, RoutedEventArgs e)
@@ -93,16 +101,11 @@ namespace Orvosi__Idopont
             this.Close();
         }
 
-       
-
         private void Return_click(object sender, RoutedEventArgs e)
         {
-            Administration adminwindow = new Administration();
-            adminwindow.Show();
+            MainWindow main = new MainWindow();
+            main.Show();
             this.Close();
         }
-
-
-
     }
 }

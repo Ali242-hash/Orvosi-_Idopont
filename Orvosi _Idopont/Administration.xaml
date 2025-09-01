@@ -41,7 +41,7 @@
             BorderThickness="0" 
             Background="Transparent"
             GotFocus="RemoveText" 
-            LostFocus="AddText" />
+            LostFocus="AddText"/>
             </Border>
 
            
@@ -60,9 +60,9 @@
                     Foreground="Wheat"
                     HorizontalAlignment="Center"/>
             </Border>
-            <Button x:Name="Docpage" IsDefault="True" FontSize="10" Content="Doctor Information" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold" Margin="0,0,0,10" Click= "Doc_Click" />
+            <Button x:Name="Docpage" IsDefault="True" FontSize="10" Content="Doctor Page" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold" Margin="0,0,0,10" Click= "Doc_Click" />
            
-            <Button x:Name="adminpage" FontSize="10" Click="Return_click" Content="Admin" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold" Margin="0,0,0,10" />
+            <Button x:Name="adminpage" FontSize="10" Click="Return_click" Content="Main Page" BorderThickness="3" BorderBrush="Black" Width="100" Height="50" Background="Beige" FontWeight="Bold" Margin="0,0,0,10" />
         </StackPanel>
     </Grid>
 </Window>

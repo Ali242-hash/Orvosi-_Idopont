@@ -1,0 +1,42 @@
+﻿<Window x:Class="Orvosi__Idopont.AdminHistory"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Orvosi__Idopont"
+        mc:Ignorable="d"
+        Title="AdminHistory" Height="600" Width="800">
+    <Grid Margin="10">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <ComboBox x:Name="DoctorFilter" Width="200" Margin="0,0,10,0"/>
+                <ComboBox x:Name="StatusFilter" Width="150" Margin="0,0,10,0">
+                    <ComboBoxItem Content="All" IsSelected="True"/>
+                    <ComboBoxItem Content="booked"/>
+                    <ComboBoxItem Content="completed"/>
+                    <ComboBoxItem Content="cancelled"/>
+                    <ComboBoxItem Content="no_show"/>
+                </ComboBox>
+                <DatePicker x:Name="DateFilter" Width="150"/>
+                <Button Content="Filter" Click="Filter_Click" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <ListBox x:Name="AppointmentsListBox" Height="500">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Lime" BorderThickness="2" CornerRadius="10" Padding="10" Margin="5">
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" Foreground="DarkRed" Text="{Binding doctor, StringFormat=Doctor: {0}}"/>
+                                <TextBlock Text="{Binding name, StringFormat=Patient: {0}}"/>
+                                <TextBlock Text="{Binding date, StringFormat=Date: {0}}"/>
+                                <TextBlock Text="{Binding timeslot, StringFormat=Time: {0}}"/>
+                                <TextBlock Text="{Binding Status_Condition, StringFormat=Status: {0}}"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </StackPanel>
+    </Grid>
+</Window>

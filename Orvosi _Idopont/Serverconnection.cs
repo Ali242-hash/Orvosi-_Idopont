@@ -18,7 +18,7 @@ namespace Orvosi__Idopont
             baseUrl = "http://127.0.0.1:3000";
         }
 
-        private async Task<object> Connection(string urlstring, string methodType, string jsonString = null)
+        public async Task<object> Connection(string urlstring, string methodType, string jsonString = null)
         {
             authHead();
             string url = baseUrl + urlstring;
@@ -60,21 +60,22 @@ namespace Orvosi__Idopont
                 string res = string.Empty;
                 try
                 {
-                    res = JsonConvert.DeserializeObject<Message>(responseText)?.message;
+                    res = JsonConvert.DeserializeObject<Message>(responseText).message;
                 }
-                catch {
+                catch
+                {
 
-                    MessageBox.Show($"Hiba a codot kharkose {res}");
+                  //  MessageBox.Show($"Hiba a codot kharkose {res}");
 
                 }
-                
+
             }
             return null;
         }
 
         private void authHead()
         {
-           
+
 
             if (client.DefaultRequestHeaders.Authorization == null && !string.IsNullOrEmpty(Token.token))
             {
@@ -154,12 +155,12 @@ namespace Orvosi__Idopont
             return users;
         }
 
-        public async Task<List<Appointment>> GetAppointments()
+        public async Task<List<Appointment>>GetAppointments()
         {
             List<Appointment> all = new List<Appointment>();
             try
             {
-                object reponse = await Connection("/appointments", "get");
+                object reponse = await Connection("/appointments/history", "get");
                 if (reponse == null) return all;
 
                 all = JsonConvert.DeserializeObject<List<Appointment>>(reponse as string);
@@ -197,8 +198,7 @@ namespace Orvosi__Idopont
         public async Task<bool> Deleteone(int id)
         {
             string url = $"/users/{id}";
-           MessageBox.Show($"Attempting DELETE at: {baseUrl}{url}");
-            MessageBox.Show ($"Using token: {Token.token}");
+      
 
             try
             {
