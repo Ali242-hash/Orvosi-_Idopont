@@ -9,83 +9,96 @@ namespace Orvosi__Idopont
 {
     public partial class AdminHistory : Window
     {
-        private List<AppointmentInfo> allAppointments = new List<AppointmentInfo>();
-        private Serverconnection connection = new Serverconnection();
-
+        Serverconnection connection = new Serverconnection();
+        List<AppointmentInfo> allappointments = new List<AppointmentInfo>();
+       
         public AdminHistory()
         {
             InitializeComponent();
-            LoadAppointments();
+            Loaded += (s, e) => LoadHistroy();
         }
 
-        private async void LoadAppointments()
+        private async void LoadHistroy()
         {
             try
             {
-              
-                List<Appointment> response = await connection.GetAppointments();
-                if (response == null || response.Count == 0)
+                List<Appointment> appointments = await connection.GetAppointmentsHistory();
+
+                if(appointments==null || appointments.Count == 0)
                 {
-                    MessageBox.Show("No appointments found.");
+                    MessageBox.Show("no appointments found");
                     return;
                 }
 
-            
-                allAppointments = response.Select(a => new AppointmentInfo
+                allappointments = appointments.Select(a=>new AppointmentInfo
                 {
-                    doctor = a.doctor,
+                    Docname = a.doctor,
                     name = a.Név,
-                    date = a.LétrehozásDátuma.ToString("yyyy-MM-dd"),
+                    date = a.LétrehozásDátuma.ToString("yyyy,MM,dd"),
                     timeslot = a.TimeslotId.ToString(),
                     Status_Condition = a.Status_Condition
+
+
                 }).ToList();
 
-                AppointmentsListBox.ItemsSource = allAppointments;
+                var doctornames = allappointments.Select(a=>a.Docname).Distinct().ToList();
+                doctornames.Insert(0, "All");
+                DoctorFilter.ItemsSource = doctornames;
+                DoctorFilter.SelectedIndex = 0;
+
+                AppointmentsListBox.ItemsSource = allappointments;
             }
-            catch (Exception ex)
+
+            catch(Exception ex)
             {
-                MessageBox.Show("Failed to load appointments: " + ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
-            var filtered = allAppointments;
+           
+            string selectedDoctor = (DoctorFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "All";
 
-            if (DoctorFilter.SelectedItem != null)
+          
+            string selectedStatus = (StatusFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "All";
+
+            DateTime? selectedDate = DateFilter.SelectedDate;
+
+            var filter = allappointments.AsEnumerable();
+
+           
+            if (!string.IsNullOrEmpty(selectedDoctor) && selectedDoctor != "All")
             {
-                string doctor = DoctorFilter.SelectedItem.ToString();
-                if (!string.IsNullOrEmpty(doctor))
-                {
-                    filtered = filtered.FindAll(a => a.doctor == doctor);
-                }
+                filter = filter.Where(a => a.Docname.Equals(selectedDoctor, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (StatusFilter.SelectedItem is ComboBoxItem statusItem)
+            
+            if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "All")
             {
-                string status = statusItem.Content.ToString();
-                if (status != "All")
-                {
-                    filtered = filtered.FindAll(a => a.Status_Condition == status);
-                }
+                filter = filter.Where(a => a.Status_Condition.Equals(selectedStatus, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (DateFilter.SelectedDate != null)
+        
+            if (selectedDate.HasValue)
             {
-                DateTime selectedDate = DateFilter.SelectedDate.Value.Date;
-                filtered = filtered.FindAll(a => DateTime.Parse(a.date).Date == selectedDate);
+                string dateString = selectedDate.Value.ToString("yyyy-MM-dd");
+                filter = filter.Where(a => a.date == dateString);
             }
 
-            AppointmentsListBox.ItemsSource = filtered;
+            AppointmentsListBox.ItemsSource = filter.ToList();
         }
+
+
+
+
+
+
+
+
+
+
     }
 
-    public class AppointmentInfo
-    {
-        public string doctor { get; set; }
-        public string name { get; set; }
-        public string date { get; set; }
-        public string timeslot { get; set; }
-        public string Status_Condition { get; set; }
-    }
+
 }

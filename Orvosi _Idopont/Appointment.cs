@@ -29,5 +29,9 @@ namespace Orvosi__Idopont
 
         [JsonProperty("doctor")]
         public string doctor { get; set; }
+
+        [JsonProperty ("doctorid")]
+
+        public int DoctorId {  get; set; }
     }
 }
