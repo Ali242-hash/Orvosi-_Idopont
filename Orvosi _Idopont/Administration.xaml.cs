@@ -107,5 +107,12 @@ namespace Orvosi__Idopont
             main.Show();
             this.Close();
         }
+
+        private void Histroy_click(object sender, RoutedEventArgs e)
+        {
+            AdminHistory histroy = new AdminHistory();
+            histroy.Show();
+            this.Close();
+        }
     }
 }

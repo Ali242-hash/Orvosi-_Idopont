@@ -55,20 +55,10 @@ namespace Orvosi__Idopont
                 response.EnsureSuccessStatusCode();
                 return responseText;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                string res = string.Empty;
-                try
-                {
-                    res = JsonConvert.DeserializeObject<Message>(responseText).message;
-                }
-                catch
-                {
 
-                  //  MessageBox.Show($"Hiba a codot kharkose {res}");
-
-                }
-
+                MessageBox.Show(ex.Message);
             }
             return null;
         }
@@ -155,15 +145,15 @@ namespace Orvosi__Idopont
             return users;
         }
 
-        public async Task<List<Appointment>>GetAppointments()
+        public async Task<List<Appointment>> GetAppointmentsHistory()
         {
             List<Appointment> all = new List<Appointment>();
             try
             {
-                object reponse = await Connection("/appointments/history", "get");
-                if (reponse == null) return all;
+                object response = await Connection("/appointments/history", "get");
+                if (response == null) return all;
 
-                all = JsonConvert.DeserializeObject<List<Appointment>>(reponse as string);
+                all = JsonConvert.DeserializeObject<List<Appointment>>(response as string);
             }
             catch (Exception ex)
             {
@@ -171,6 +161,8 @@ namespace Orvosi__Idopont
             }
             return all;
         }
+
+
 
         public async Task<bool> loginAppointment(int timeslotId, string név)
         {

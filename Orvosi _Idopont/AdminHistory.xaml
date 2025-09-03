@@ -21,12 +21,12 @@
                 <Button Content="Filter" Click="Filter_Click" Margin="10,0,0,0"/>
             </StackPanel>
 
-            <ListBox x:Name="AppointmentsListBox" Height="500">
+            <ListBox x:Name="AppointmentsListBox" Height="500" Width="600">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Lime" BorderThickness="2" CornerRadius="10" Padding="10" Margin="5">
+                        <Border BorderBrush="Lime" BorderThickness="2" CornerRadius="10" Padding="10" Width="300" >
                             <StackPanel>
-                                <TextBlock FontWeight="Bold" Foreground="DarkRed" Text="{Binding doctor, StringFormat=Doctor: {0}}"/>
+                                <TextBlock FontWeight="Bold" Foreground="DarkRed" Text="{Binding Docname, StringFormat=Doctor: {0}}"/>
                                 <TextBlock Text="{Binding name, StringFormat=Patient: {0}}"/>
                                 <TextBlock Text="{Binding date, StringFormat=Date: {0}}"/>
                                 <TextBlock Text="{Binding timeslot, StringFormat=Time: {0}}"/>

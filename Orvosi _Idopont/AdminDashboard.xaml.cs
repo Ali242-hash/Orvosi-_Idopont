@@ -29,7 +29,7 @@ namespace Orvosi__Idopont
 
         private async void Load_Appointments()
         {
-            List<Appointment> appointments = await connection.GetAppointments();
+            List<Appointment> appointments = await connection.GetAppointmentsHistory();
 
          /*   if (appointments == null)
             {
