@@ -205,5 +205,19 @@ namespace Orvosi__Idopont
             }
             return false;
         }
+
+        public async Task ActivateUser(int userId)
+        {
+            await Connection($"/admin/{userId}/active", "put", null);
+        }
+
+        public async Task DeactivateUser(int userId)
+        {
+            await Connection($"/admin/{userId}/inactive","put", null);
+        }
+
+
+
+
     }
 }
