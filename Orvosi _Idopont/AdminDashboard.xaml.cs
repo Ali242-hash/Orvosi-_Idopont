@@ -14,9 +14,6 @@ using System.Windows.Shapes;
 
 namespace Orvosi__Idopont
 {
-    /// <summary>
-    /// Interaction logic for AdminDashboard.xaml
-    /// </summary>
     public partial class AdminDashboard : Window
     {
         Serverconnection connection = new Serverconnection();
@@ -27,42 +24,7 @@ namespace Orvosi__Idopont
             Load_Appointments();
         }
 
-        private async void Load_Appointments()
-        {
-            List<Appointment> appointments = await connection.GetAppointmentsHistory();
-
-         /*   if (appointments == null)
-            {
-                MessageBox.Show("No appointments found");
-                return;
-            }
-
-            if (appointments.Count == 0)
-            {
-                MessageBox.Show("No appointments found");
-                return;
-            }
-         */
-
-            foreach (Appointment app in appointments)
-            {
-                Grid grid = new Grid();
-                grid.Margin = new Thickness(5);
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(4, GridUnitType.Star) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-
-                StackPanel panel = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Left };
-                panel.Children.Add(new Label() { Content = $"Timeslot ID: {app.TimeslotId}  ", FontWeight = FontWeights.Bold });
-                panel.Children.Add(new Label() { Content = $"Patient Name: {app.Név}  ", FontWeight = FontWeights.Normal });
-                panel.Children.Add(new Label() { Content = $"Patient ID: {app.PaciensId}  ", FontWeight = FontWeights.Normal });
-                panel.Children.Add(new Label() { Content = $"Created: {app.LétrehozásDátuma}  ", FontWeight = FontWeights.Normal });
-
-                Grid.SetColumn(panel, 0);
-                grid.Children.Add(panel);
-
-                Patientinfo.Children.Add(grid);
-            }
-        }
+   
 
         async void Loading_Info()
         {
@@ -81,43 +43,108 @@ namespace Orvosi__Idopont
                 {
                     Grid grid = new Grid();
                     grid.Margin = new Thickness(5);
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(4, GridUnitType.Star) });
-                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-                    StackPanel panel = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Left };
-                    panel.Children.Add(new Label() { Content = $"Name: {profile.Fullname}  ", FontWeight = FontWeights.Bold });
-                    panel.Children.Add(new Label() { Content = $"Username: {profile.Username}  ", FontWeight = FontWeights.Normal });
-                    panel.Children.Add(new Label() { Content = $"Email: {profile.Email}  ", FontWeight = FontWeights.Normal });
-                    panel.Children.Add(new Label() { Content = $"Role: {profile.Role}  ", FontWeight = FontWeights.Normal });
+                    for (int i = 0; i < 7; i++)
+                    {
+                        grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                    }
 
-                    Grid.SetColumn(panel, 0);
-                    grid.Children.Add(panel);
+                    Label nameLabel = new Label() { Content = profile.Fullname, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center };
+                    Grid.SetColumn(nameLabel, 0);
+                    grid.Children.Add(nameLabel);
+
+                    Label usernameLabel = new Label() { Content = profile.Username, HorizontalAlignment = HorizontalAlignment.Center };
+                    Grid.SetColumn(usernameLabel, 1);
+                    grid.Children.Add(usernameLabel);
+
+                    Label emailLabel = new Label() { Content = profile.Email, HorizontalAlignment = HorizontalAlignment.Center };
+                    Grid.SetColumn(emailLabel, 2);
+                    grid.Children.Add(emailLabel);
+
+                    Label roleLabel = new Label() { Content = profile.Role, HorizontalAlignment = HorizontalAlignment.Center };
+                    Grid.SetColumn(roleLabel, 3);
+                    grid.Children.Add(roleLabel);
+
+                    Button activateButton = new Button()
+                    {
+                        Content = "Activate",
+                        Tag = profile.Id,
+                        Width = 80,
+                        Margin = new Thickness(5),
+                        Background = Brushes.LightGreen,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                    Grid.SetColumn(activateButton, 4);
+                    grid.Children.Add(activateButton);
+                    activateButton.Click += async (s, e) =>
+                    {
+                        await connection.ActivateUser((int)activateButton.Tag);
+                        Loading_Info();
+                    };
+
+                    Button deactivateButton = new Button()
+                    {
+                        Content = "Deactivate",
+                        Tag = profile.Id,
+                        Width = 80,
+                        Margin = new Thickness(5),
+                        Background = Brushes.OrangeRed,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                    Grid.SetColumn(deactivateButton, 5);
+                    grid.Children.Add(deactivateButton);
+                    deactivateButton.Click += async (s, e) =>
+                    {
+                        await connection.DeactivateUser((int)deactivateButton.Tag);
+                        Loading_Info();
+                    };
 
                     Button deleteButton = new Button()
                     {
                         Content = "Delete",
                         Tag = profile.Id,
-                        BorderThickness = new Thickness(1),
-                        BorderBrush = Brushes.Red,
                         Width = 80,
-                        Height = 30,
                         Margin = new Thickness(5),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
                         Background = Brushes.LightCoral,
                         Foreground = Brushes.White,
-                        FontWeight = FontWeights.Bold
+                        FontWeight = FontWeights.Bold,
+                        HorizontalAlignment = HorizontalAlignment.Center
                     };
-                    Grid.SetColumn(deleteButton, 1);
+                    Grid.SetColumn(deleteButton, 6);
                     grid.Children.Add(deleteButton);
                     deleteButton.Click += DeleteEvent;
 
                     Patientinfo.Children.Add(grid);
                 }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void Load_Appointments()
+        {
+            List<Appointment> appointments = await connection.GetAppointmentsHistory();
+
+            foreach (Appointment app in appointments)
+            {
+                Grid grid = new Grid();
+                grid.Margin = new Thickness(5);
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(4, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+                StackPanel panel = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Left };
+                panel.Children.Add(new Label() { Content = $"Timeslot ID: {app.TimeslotId}  ", FontWeight = FontWeights.Bold });
+                panel.Children.Add(new Label() { Content = $"Patient Name: {app.Név}  ", FontWeight = FontWeights.Normal });
+                panel.Children.Add(new Label() { Content = $"Patient ID: {app.PaciensId}  ", FontWeight = FontWeights.Normal });
+                panel.Children.Add(new Label() { Content = $"Created: {app.LétrehozásDátuma}  ", FontWeight = FontWeights.Normal });
+
+                Grid.SetColumn(panel, 0);
+                grid.Children.Add(panel);
+
+                Patientinfo.Children.Add(grid);
             }
         }
 

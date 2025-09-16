@@ -5,40 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Orvosi__Idopont"
         mc:Ignorable="d"
-        Title="AdminDashboard" Height="450" Width="800">
+        Title="AdminDashboard" Height="450" Width="1000">
     <Grid Background="LightYellow" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-       
             <RowDefinition Height="Auto" />
-           
             <RowDefinition Height="*" />
-          
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="1.5*" />
-            
-           
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1.5*" />
         </Grid.ColumnDefinitions>
 
-     
-        <Border Grid.Row="0" Grid.ColumnSpan="5" Background="LightSteelBlue" Padding="5" Margin="0 0 0 10">
+        <Border Grid.Row="0" Grid.ColumnSpan="7" Background="LightSteelBlue" Padding="5" Margin="0 0 0 10">
             <Label Content="Patient Information" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
         </Border>
 
-     
         <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" Content="Name" FontWeight="Bold" />
         <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="1" Content="Username" FontWeight="Bold" />
         <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="2" Content="Email" FontWeight="Bold" />
         <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="3" Content="Role" FontWeight="Bold" />
-  
-        
+        <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="4" Content="Activate" FontWeight="Bold" />
+        <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="5" Content="Deactivate" FontWeight="Bold" />
+        <Label HorizontalAlignment="Center" Grid.Row="1" Grid.Column="6" Content="Delete" FontWeight="Bold" />
 
-       
-        <ScrollViewer Grid.Row="2" Grid.ColumnSpan="5" VerticalScrollBarVisibility="Auto" Background="AliceBlue" Margin="0,10,0,0">
+        <ScrollViewer Grid.Row="2" Grid.ColumnSpan="7" VerticalScrollBarVisibility="Auto" Background="AliceBlue" Margin="0,10,0,0">
             <StackPanel Name="Patientinfo" />
         </ScrollViewer>
     </Grid>
